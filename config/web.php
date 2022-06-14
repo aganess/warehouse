@@ -20,6 +20,9 @@ $config = [
         'common' => [
             'class' => 'app\config\components\Common',
         ],
+        'grid' => [
+            'class' => 'app\config\components\grid\GridViewConverter',
+        ],
         'request' => [
             'baseUrl' => '',
             'cookieValidationKey' => env('FRONTEND_COOKIE_VALIDATION_KEY'),

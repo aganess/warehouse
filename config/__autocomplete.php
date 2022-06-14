@@ -1,6 +1,7 @@
 <?php
 
 use app\config\components\Common;
+use app\config\components\grid\GridViewConverter;
 use yii\console\Application;
 use yii\web\User;
 
@@ -26,6 +27,7 @@ class Yii {
  * @property  yii\rbac\DbManager $authManager
  * @property  User|__WebUser     $user
  * @property  Common             $common
+ * @property  GridViewConverter  $grid
  * 
  */
 class __Application {
