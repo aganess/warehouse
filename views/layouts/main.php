@@ -38,7 +38,14 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav'],
         'items' => [
             ['label' => 'Главная', 'url' => ['/warehouse']],
+            ['label' => 'Продукты', 'url' => ['/warehouse/products']],
             ['label' => 'Склады', 'url' => ['/warehouse/warehouses']],
+            ['label' => 'Номенклатурные группы', 'url' => ['/warehouse/nomenclature-groups']],
+            ['label' => 'Действия',  'items' => [
+                ['label' => 'Единицы измерения', 'url' => '/warehouse/measurement'],
+
+            ],
+            ],
         ],
     ]);
     NavBar::end();

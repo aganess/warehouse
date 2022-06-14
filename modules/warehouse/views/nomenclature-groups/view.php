@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\warehouse\models\warehouses\Warehouses */
+/* @var $model app\modules\warehouse\models\nomenclatureGroup\NomenclatureGroups */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Склады ', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Номенклатурные группы', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="warehouses-view">
+<div class="nomenclature-groups-view">
 
     <h3><?= Html::encode($this->title) ?></h3>
 
@@ -30,15 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'title',
-            'slug',
             [
-                'attribute' => 'description',
+                'attribute' => 'parent_id',
                 'value' => function ($model) {
-                    return $model['description'];
-                },
-                'format' => 'raw'
+                    return $model::getParent($model['parent_id']);
+                }
             ],
+            'title',
             Yii::$app->grid->getStatus(),
             'created_at',
             'updated_at',

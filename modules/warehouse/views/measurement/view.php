@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\warehouse\models\warehouses\Warehouses */
+/* @var $model app\modules\warehouse\models\measurement\Measurement */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Склады ', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Единицы измерения', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="warehouses-view">
+<div class="measurement-view">
 
     <h3><?= Html::encode($this->title) ?></h3>
 
@@ -31,14 +31,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'title',
-            'slug',
-            [
-                'attribute' => 'description',
-                'value' => function ($model) {
-                    return $model['description'];
-                },
-                'format' => 'raw'
-            ],
             Yii::$app->grid->getStatus(),
             'created_at',
             'updated_at',

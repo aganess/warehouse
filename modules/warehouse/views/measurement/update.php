@@ -3,14 +3,14 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\warehouse\models\warehouses\Warehouses */
+/* @var $model app\modules\warehouse\models\measurement\Measurement */
 
-$this->title = 'Обновление склада: ' . $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Склады', 'url' => ['index']];
+$this->title = 'Обновление единица измерения: ' . $model->title;
+$this->params['breadcrumbs'][] = ['label' => 'Единицы измерения', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Обновить';
 ?>
-<div class="warehouses-update">
+<div class="measurement-update">
 
     <h3><?= Html::encode($this->title) ?></h3>
 

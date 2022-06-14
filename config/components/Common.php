@@ -10,7 +10,7 @@ class Common extends Component
      * @param $array
      * @return void
      */
-    public function debug($array)
+    public static function debug($array)
     {
         echo '<pre>'.print_r($array, true).'</pre>';
     }

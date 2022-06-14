@@ -1,20 +1,18 @@
 <?php
 
-use app\modules\warehouse\models\warehouses\Warehouses;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
-
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\warehouse\models\warehouses\search\WarehousesSearch */
+/* @var $searchModel app\modules\warehouse\models\Measurement\search\MeasurementSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Склады';
+$this->title = 'Единицы измерения';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="warehouses-index">
+<div class="measurement-index">
 
     <h3><?= Html::encode($this->title) ?></h3>
 
@@ -33,14 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'title',
-            //'description:ntext',
-            //'slug',
             Yii::$app->grid->getStatus(),
             'created_at',
-            //'updated_at',
+            'updated_at',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Warehouses $model, $key, $index, $column) {
+                'urlCreator' => function ($action,  $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],

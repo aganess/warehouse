@@ -50,7 +50,7 @@ class Warehouses extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ИД склада',
-            'title' => 'Имя склада',
+            'title' => 'Название склада',
             'description' => 'Описание',
             'status' => 'Статус',
             'slug' => 'Слуг',
