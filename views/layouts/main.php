@@ -44,6 +44,7 @@ AppAsset::register($this);
             ['label' => 'Действия',  'items' => [
                 ['label' => 'Единицы измерения', 'url' => '/warehouse/measurement'],
                 ['label' => 'Модификации', 'url' => '/warehouse/product-modifications'],
+                ['label' => 'Назначить модификацию группам', 'url' => '/warehouse/product-modifications-groups'],
 
             ],
             ],

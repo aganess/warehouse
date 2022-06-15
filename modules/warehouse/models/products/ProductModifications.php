@@ -2,7 +2,9 @@
 
 namespace app\modules\warehouse\models\products;
 
+use app\modules\warehouse\models\products\query\ProductModificationsQuery;
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "product_modifications".
@@ -13,7 +15,7 @@ use Yii;
  * @property string|null $created_at
  * @property string|null $updated_at
  */
-class ProductModifications extends \yii\db\ActiveRecord
+class ProductModifications extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -42,20 +44,20 @@ class ProductModifications extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'title' => 'Title',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id' => 'ИД модиификации',
+            'title' => 'Название',
+            'status' => 'Статус',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата обновления',
         ];
     }
 
     /**
      * {@inheritdoc}
-     * @return \app\modules\warehouse\models\products\query\ProductModificationsQuery the active query used by this AR class.
+     * @return ProductModificationsQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\modules\warehouse\models\products\query\ProductModificationsQuery(get_called_class());
+        return new ProductModificationsQuery(get_called_class());
     }
 }
