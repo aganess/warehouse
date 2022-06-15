@@ -3,7 +3,7 @@
 namespace app\modules\warehouse\controllers;
 
 use app\modules\warehouse\models\measurement\Measurement;
-use app\modules\warehouse\models\Measurement\search\MeasurementSearch;
+use app\modules\warehouse\models\measurement\search\MeasurementSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
