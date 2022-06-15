@@ -43,6 +43,7 @@ AppAsset::register($this);
             ['label' => 'Номенклатурные группы', 'url' => ['/warehouse/nomenclature-groups']],
             ['label' => 'Действия',  'items' => [
                 ['label' => 'Единицы измерения', 'url' => '/warehouse/measurement'],
+                ['label' => 'Модификации', 'url' => '/warehouse/product-modifications'],
 
             ],
             ],
