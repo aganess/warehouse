@@ -9,15 +9,15 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\modules\warehouse\models\products\search\ProductsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Products';
+$this->title = 'Продукты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="products-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title) ?></h3>
 
     <p>
-        <?= Html::a('Create Products', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -30,23 +30,33 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'group_id',
-            'measurement_id',
+            [
+                'attribute' => 'group_id',
+                'value' => function ($model) {
+                    return $model['group']['title'];
+                }
+            ],
+            [
+                'attribute' => 'measurement_id',
+                'value' => function($model){
+                    return $model['measurement']['title'];
+                }
+            ],
+
             'title',
-            'slug',
             //'description:ntext',
             //'manufacturer',
-            //'article',
-            //'quantity',
-            //'inventory_number',
+            'article',
+            'quantity',
+           // 'inventory_number',
             //'expiration_date',
             //'img',
-            //'status',
-            //'created_at',
+            Yii::$app->grid->getStatus(),
+            'created_at',
             //'updated_at',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Products $model, $key, $index, $column) {
+                'urlCreator' => function ($action,  $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],

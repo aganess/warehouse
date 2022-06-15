@@ -7,20 +7,20 @@ use yii\widgets\DetailView;
 /* @var $model app\modules\warehouse\models\products\Products */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Products', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Продукты', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="products-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title) ?></h3>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Обновить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
+                'confirm' => 'Вы уверены, что хотите удалить этот элемент?',
                 'method' => 'post',
             ],
         ]) ?>
@@ -30,18 +30,34 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'group_id',
-            'measurement_id',
+            [
+                'attribute' => 'group_id',
+                'value' => function ($model) {
+                    return $model['group']['title'];
+                }
+            ],
+            [
+                'attribute' => 'measurement_id',
+                'value' => function ($model) {
+                    return $model['measurement']['title'];
+                }
+            ],
             'title',
             'slug',
-            'description:ntext',
+            [
+                'attribute' => 'description',
+                'value' => function ($model) {
+                    return $model['description'];
+                },
+                'format' => 'raw'
+            ],
             'manufacturer',
             'article',
             'quantity',
             'inventory_number',
             'expiration_date',
-            'img',
-            'status',
+            Yii::$app->grid->getImg(),
+            Yii::$app->grid->getStatus(),
             'created_at',
             'updated_at',
         ],

@@ -12,13 +12,11 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'group_id')->textInput() ?>
+    <?= $form->field($model, 'group_id')->dropDownList($model->getGroups()) ?>
 
-    <?= $form->field($model, 'measurement_id')->textInput() ?>
+    <?= $form->field($model, 'measurement_id')->dropDownList($model->getMeasurements()) ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
@@ -30,15 +28,16 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'inventory_number')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'expiration_date')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'expiration_date')->widget(\kartik\date\DatePicker::classname(), [
+        'options' => ['placeholder' => 'Введите дату...'],
+        'pluginOptions' => [
+            'autoclose' => true
+        ]
+    ]); ?>
 
-    <?= $form->field($model, 'img')->textInput(['maxlength' => true]) ?>
+    <?= Yii::$app->grid->setImg($form, $model) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <?= Yii::$app->grid->setStatus($form, $model) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

@@ -2,6 +2,7 @@
 
 namespace app\modules\warehouse\controllers;
 
+use app\config\components\Common;
 use app\modules\warehouse\models\products\Products;
 use app\modules\warehouse\models\products\search\ProductsSearch;
 use yii\web\Controller;
