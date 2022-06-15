@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\warehouse\models\Measurement\search;
+namespace app\modules\warehouse\models\measurement\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
