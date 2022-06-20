@@ -5,20 +5,24 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `{{%receipt_products}}`.
  */
-class m220615_165442_create_receipt_products_table extends Migration
+class m220615_165442_create_products_actions_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('{{%receipt_products}}', [
+        $this->createTable('{{%products_actions}}', [
             'id' => $this->primaryKey(),
             'date' => $this->string()->notNull(),
+            'who' => $this->string()->notNull(),
+            'phone' => $this->string()->null(),
             'from' => $this->string()->notNull(),
             'to' => $this->string()->notNull(),
+            'object_id' =>  $this->integer()->null(),
             'documents' => $this->string()->defaultValue(null),
             'documents_comment' => $this->text()->defaultValue(null),
+
             'status' => $this->smallInteger()->defaultValue(1),
             'created_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP'),
             'updated_at' => $this->timestamp()->defaultValue(null)->append('ON UPDATE CURRENT_TIMESTAMP'),

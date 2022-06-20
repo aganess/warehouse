@@ -2,9 +2,14 @@
 
 namespace app\config\components\grid;
 
+use app\config\components\Common;
+use app\modules\warehouse\models\products\ProductModifications;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-
 use yii\base\Component;
+use kartik\select2\Select2;
+use yii\widgets\ActiveForm;
+use yii\web\JsExpression;
 
 /**
  *
@@ -79,4 +84,90 @@ class GridViewConverter extends Component
         ];
     }
 
+
+    /**
+     * @param $form
+     * @param $model
+     * @return array[]
+     */
+    public function setDynamicColumns($form, $model): array
+    {
+        $data = [
+            [
+                'name' => 'product_id',
+                'type' => Select2::className(),
+                'title' => 'Номеклатура',
+                'options' => [
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'minimumInputLength' => 1,
+                        'language' => 'ru',
+                        'ajax' => [
+                            'url' => \yii\helpers\Url::to(['/warehouse/ajax/get-products']),
+                            'dataType' => 'json',
+                            'data' => new \yii\web\JsExpression(
+                                'function(params) { 
+                                                        return {q:params.term} 
+                                            }'
+                            )
+                        ],
+                        'escapeMarkup' => new JsExpression(
+                            'function (markup) {
+                                                    console.log("escapeMarkup"); return markup; 
+                                        }'
+                        ),
+                        'templateResult' => new JsExpression(
+                            'function(data) {
+                                                    console.log("templateResult"); 
+                                                    console.log(data); return data.name;
+                                         }'
+                        ),
+                        'templateSelection' => new JsExpression(
+                            'function (data) {
+                                                    console.log("templateSelection"); 
+                                                    $("#discipline_text").val(data.name); 
+                                                    console.log(data);
+                                                    return data.name;
+                                        }'
+                        ),
+                    ],
+                ],
+            ],
+            [
+                'name' => 'quantity',
+                'title' => 'Количество',
+                'defaultValue' => 1,
+                'options' => [
+                    'type' => 'number'
+                ]
+            ],
+            [
+                'name' => 'measurement',
+                'title' => 'Единица измерения',
+                'type' => 'dropDownList',
+                'items' => $model->getAllMeasurement(),
+                'options' => [
+                    'type' => 'string'
+                ]
+            ],
+        ];
+
+        $modificationsData = ProductModifications::find()->where(['status' => 1])->all();
+        $modData = [];
+
+        foreach ($modificationsData as $key => $value) {
+            $modData[] = [
+                'name' => $value['slug'],
+                'title' => $value['title'],
+                'options' => [
+                    'id' => $value['slug'],
+                    'class' => 'mod-cls',
+                    'data-id' => $value['id']
+                ]
+            ];
+        }
+
+        return array_merge($data, $modData);
+
+    }
 }

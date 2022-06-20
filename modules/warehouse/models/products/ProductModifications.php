@@ -2,6 +2,7 @@
 
 namespace app\modules\warehouse\models\products;
 
+use app\modules\warehouse\models\BaseSluggerTrait;
 use app\modules\warehouse\models\products\query\ProductModificationsQuery;
 use Yii;
 use yii\db\ActiveRecord;
@@ -11,12 +12,14 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property string $title
+ * @property string $value
  * @property int|null $status
  * @property string|null $created_at
  * @property string|null $updated_at
  */
 class ProductModifications extends ActiveRecord
 {
+    use BaseSluggerTrait;
     /**
      * {@inheritdoc}
      */
@@ -34,7 +37,7 @@ class ProductModifications extends ActiveRecord
             [['title'], 'required'],
             [['status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['title'], 'string', 'max' => 255],
+            [['title' ,'slug'], 'string', 'max' => 255],
         ];
     }
 
@@ -46,6 +49,7 @@ class ProductModifications extends ActiveRecord
         return [
             'id' => 'ИД модиификации',
             'title' => 'Название',
+            'slug' => 'Слуг',
             'status' => 'Статус',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата обновления',

@@ -6,18 +6,18 @@ use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\warehouse\models\products\search\ReceiptProductsSearch */
+/* @var $searchModel app\modules\warehouse\models\products\search\ProductsActionsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Поступление товаров на склад';
+$this->title = 'Products Actions';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="receipt-products-index">
+<div class="products-actions-index">
 
-    <h3><?= Html::encode($this->title) ?></h3>
+    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Products Actions', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -31,16 +31,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'date',
+            'who',
+            'phone',
             'from',
-            'to',
-            'documents',
+            //'to',
+            //'object_id',
+            //'documents',
             //'documents_comment:ntext',
             //'status',
             //'created_at',
             //'updated_at',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, ReceiptProducts $model, $key, $index, $column) {
+                'urlCreator' => function ($action, ProductsActions $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],

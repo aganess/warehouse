@@ -2,16 +2,16 @@
 
 namespace app\modules\warehouse\controllers;
 
-use app\modules\warehouse\models\products\ReceiptProducts;
-use app\modules\warehouse\models\products\search\ReceiptProductsSearch;
+use app\modules\warehouse\models\products\ProductsActions;
+use app\modules\warehouse\models\products\search\ProductsActionsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * ReceiptProductsController implements the CRUD actions for ReceiptProducts model.
+ * ProductsActionsController implements the CRUD actions for ProductsActions model.
  */
-class ReceiptProductsController extends Controller
+class ProductsActionsController extends Controller
 {
     /**
      * @inheritDoc
@@ -32,13 +32,13 @@ class ReceiptProductsController extends Controller
     }
 
     /**
-     * Lists all ReceiptProducts models.
+     * Lists all ProductsActions models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new ReceiptProductsSearch();
+        $searchModel = new ProductsActionsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -48,7 +48,7 @@ class ReceiptProductsController extends Controller
     }
 
     /**
-     * Displays a single ReceiptProducts model.
+     * Displays a single ProductsActions model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -61,13 +61,13 @@ class ReceiptProductsController extends Controller
     }
 
     /**
-     * Creates a new ReceiptProducts model.
+     * Creates a new ProductsActions model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new ReceiptProducts();
+        $model = new ProductsActions();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -83,7 +83,7 @@ class ReceiptProductsController extends Controller
     }
 
     /**
-     * Updates an existing ReceiptProducts model.
+     * Updates an existing ProductsActions model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -103,7 +103,7 @@ class ReceiptProductsController extends Controller
     }
 
     /**
-     * Deletes an existing ReceiptProducts model.
+     * Deletes an existing ProductsActions model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -117,15 +117,15 @@ class ReceiptProductsController extends Controller
     }
 
     /**
-     * Finds the ReceiptProducts model based on its primary key value.
+     * Finds the ProductsActions model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return ReceiptProducts the loaded model
+     * @return ProductsActions the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = ReceiptProducts::findOne(['id' => $id])) !== null) {
+        if (($model = ProductsActions::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

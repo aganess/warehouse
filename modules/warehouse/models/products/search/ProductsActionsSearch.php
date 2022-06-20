@@ -4,12 +4,12 @@ namespace app\modules\warehouse\models\products\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\warehouse\models\products\ReceiptProducts;
+use app\modules\warehouse\models\products\ProductsActions;
 
 /**
- * ReceiptProductsSearch represents the model behind the search form of `app\modules\warehouse\models\products\ReceiptProducts`.
+ * ProductsActionsSearch represents the model behind the search form of `app\modules\warehouse\models\products\ProductsActions`.
  */
-class ReceiptProductsSearch extends ReceiptProducts
+class ProductsActionsSearch extends ProductsActions
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class ReceiptProductsSearch extends ReceiptProducts
     public function rules()
     {
         return [
-            [['id', 'status'], 'integer'],
-            [['date', 'from', 'to', 'documents', 'documents_comment', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'object_id', 'status'], 'integer'],
+            [['date', 'who', 'phone', 'from', 'to', 'documents', 'documents_comment', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -40,7 +40,7 @@ class ReceiptProductsSearch extends ReceiptProducts
      */
     public function search($params)
     {
-        $query = ReceiptProducts::find();
+        $query = ProductsActions::find();
 
         // add conditions that should always apply here
 
@@ -59,12 +59,15 @@ class ReceiptProductsSearch extends ReceiptProducts
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'object_id' => $this->object_id,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'date', $this->date])
+            ->andFilterWhere(['like', 'who', $this->who])
+            ->andFilterWhere(['like', 'phone', $this->phone])
             ->andFilterWhere(['like', 'from', $this->from])
             ->andFilterWhere(['like', 'to', $this->to])
             ->andFilterWhere(['like', 'documents', $this->documents])

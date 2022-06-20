@@ -3,11 +3,11 @@
 namespace app\modules\warehouse\models\products\query;
 
 /**
- * This is the ActiveQuery class for [[\app\modules\warehouse\models\products\ReceiptProducts]].
+ * This is the ActiveQuery class for [[\app\modules\warehouse\models\products\ProductsActionsData]].
  *
- * @see \app\modules\warehouse\models\products\ReceiptProducts
+ * @see \app\modules\warehouse\models\products\ProductsActionsData
  */
-class ReceiptProductsQuery extends \yii\db\ActiveQuery
+class ProductsActionsDataQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class ReceiptProductsQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return \app\modules\warehouse\models\products\ReceiptProducts[]|array
+     * @return \app\modules\warehouse\models\products\ProductsActionsData[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class ReceiptProductsQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return \app\modules\warehouse\models\products\ReceiptProducts|array|null
+     * @return \app\modules\warehouse\models\products\ProductsActionsData|array|null
      */
     public function one($db = null)
     {

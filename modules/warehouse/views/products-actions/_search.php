@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\warehouse\models\products\search\ReceiptProductsSearch */
+/* @var $model app\modules\warehouse\models\products\search\ProductsActionsSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="receipt-products-search">
+<div class="products-actions-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -22,11 +22,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'date') ?>
 
+    <?= $form->field($model, 'who') ?>
+
+    <?= $form->field($model, 'phone') ?>
+
     <?= $form->field($model, 'from') ?>
 
-    <?= $form->field($model, 'to') ?>
+    <?php // echo $form->field($model, 'to') ?>
 
-    <?= $form->field($model, 'documents') ?>
+    <?php // echo $form->field($model, 'object_id') ?>
+
+    <?php // echo $form->field($model, 'documents') ?>
 
     <?php // echo $form->field($model, 'documents_comment') ?>
 
