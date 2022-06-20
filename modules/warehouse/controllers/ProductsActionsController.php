@@ -2,11 +2,19 @@
 
 namespace app\modules\warehouse\controllers;
 
+use app\config\components\Common;
 use app\modules\warehouse\models\products\ProductsActions;
 use app\modules\warehouse\models\products\search\ProductsActionsSearch;
+use app\modules\warehouse\models\services\ActionsService;
+use yii\base\Exception;
+use yii\helpers\FileHelper;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\web\UploadedFile;
+use Yii;
 
 /**
  * ProductsActionsController implements the CRUD actions for ProductsActions model.
@@ -61,17 +69,78 @@ class ProductsActionsController extends Controller
     }
 
     /**
-     * Creates a new ProductsActions model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
+     * @return string
+     * @throws \yii\db\Exception
      */
     public function actionCreate()
     {
         $model = new ProductsActions();
+        $defaultType = 1;
+
+
+        if (!empty($this->request->get('type'))) {
+            $defaultType = $this->request->get('type');
+        }
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($this->request->post())) {
+                $postData = $this->request->post('ProductsActions');
+
+                switch ($defaultType) {
+                    case ProductsActions::INVENTORY_WAREHOUSE:
+                    case ProductsActions::INVENTORY_EMPLOYEE:
+
+                        $actionService = new ActionsService($postData);
+                        $save = $actionService->createTypeOneAnsTwo();
+
+                        if ($save['createdId']) {
+                            $q = Yii::$app->db->createCommand()->batchInsert('products_actions_data',
+                                ['actions_id', 'actions_type', 'data'],
+                                [
+                                    [$save['createdId'], $defaultType, Json::encode($postData['products'])],
+                                ]
+                            );
+                            if ($q->execute()) {
+                                $this->redirect(['/warehouse/products-actions/index'], 302);
+                            }
+                        }
+                        break;
+
+                    case ProductsActions::RECEIPT_GOODS_WAREHOUSE:
+
+                        $actionService = new ActionsService($postData);
+                        $save = $actionService->createTypeThree();
+
+                        if ($save['createdId']) {
+                            $q = Yii::$app->db->createCommand()->batchInsert('products_actions_data',
+                                ['actions_id', 'actions_type', 'data'],
+                                [
+                                    [$save['createdId'], $defaultType, Json::encode($postData['products'])],
+                                ]
+                            );
+                            if ($q->execute()) {
+                                $this->redirect(['/warehouse/products-actions/index'], 302);
+                            }
+                        }
+                        break;
+                    case ProductsActions::TRANSFER_OBJECT_EMPLOYEE:
+                        $actionService = new ActionsService($postData);
+                        $save = $actionService->createFour();
+
+                        if ($save['createdId']) {
+                            $q = Yii::$app->db->createCommand()->batchInsert('products_actions_data',
+                                ['actions_id', 'actions_type', 'data'],
+                                [
+                                    [$save['createdId'], $defaultType, Json::encode($postData['products'])],
+                                ]
+                            );
+                            if ($q->execute()) {
+                                $this->redirect(['/warehouse/products-actions/index'], 302);
+                            }
+                        }
+                        break;
+                }
+
             }
         } else {
             $model->loadDefaultValues();
@@ -79,26 +148,31 @@ class ProductsActionsController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'defaultType' => $defaultType
         ]);
     }
 
     /**
-     * Updates an existing ProductsActions model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param $id
+     * @return string|Response
+     * @throws NotFoundHttpException
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $defaultType = 1;
+
+        if (!empty($this->request->get('type'))) {
+            $defaultType = $this->request->get('type');
+        }
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'model'       => $model,
+            'defaultType' => $defaultType,
         ]);
     }
 
@@ -106,7 +180,7 @@ class ProductsActionsController extends Controller
      * Deletes an existing ProductsActions model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
-     * @return \yii\web\Response
+     * @return Response
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)

@@ -1,43 +1,99 @@
 <?php
 
+/* @var $this yii\web\View */
+/* @var $model ProductsActions */
+
+/* @var $form yii\widgets\ActiveForm */
+
+/* @var $defaultType integer */
+
+use app\modules\warehouse\models\products\ProductsActions;
+use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\web\JsExpression;
+use yii\helpers\Url;
+use unclead\multipleinput\MultipleInput;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\warehouse\models\products\ProductsActions */
-/* @var $form yii\widgets\ActiveForm */
+$css = <<<CSS
+    .list-cell__product_ids    {width: 400px}
+    .list-cell__quantity       {width: 122px}
+    .list-cell__measurement    {width: 122px}
+    .list-cell__rost           {width: 122px}
+    .list-cell__nomer-partii   {width: 122px}
+    .list-cell__sostoyanie     {width: 122px}
+    .list-cell__razmer         {width: 122px}
+    .list-cell__cvet           {width: 122px}
+CSS;
+$this->registerCss($css);
 ?>
 
-<div class="products-actions-form">
+<div class="receipt-products-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'date')->textInput(['maxlength' => true]) ?>
+    <?php $model->type = $defaultType ?>
+    <?= $form->field($model, 'type')->dropDownList($model->getAllTypes(), [
+        'id' => 'types'
+    ]) ?>
 
-    <?= $form->field($model, 'who')->textInput(['maxlength' => true]) ?>
+    <?php if ($defaultType == 1) : ?>
+        <?= $this->render('parts/_render_type_1', [
+            'form' => $form,
+            'model' => $model
+        ]) ?>
+    <?php endif; ?>
 
-    <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
+    <?php if ($defaultType == 2) : ?>
+        <?= $this->render('parts/_render_type_2', [
+            'form' => $form,
+            'model' => $model
+        ]) ?>
+    <?php endif; ?>
 
-    <?= $form->field($model, 'from')->textInput(['maxlength' => true]) ?>
+    <?php if ($defaultType == 3) : ?>
+        <?= $this->render('parts/_render_type_3', [
+            'form' => $form,
+            'model' => $model
+        ]) ?>
+    <?php endif; ?>
 
-    <?= $form->field($model, 'to')->textInput(['maxlength' => true]) ?>
+    <?php if ($defaultType == 4) : ?>
+        <?= $this->render('parts/_render_type_4', [
+            'form' => $form,
+            'model' => $model
+        ]) ?>
+    <?php endif; ?>
 
-    <?= $form->field($model, 'object_id')->textInput() ?>
+    <div class="form-row">
+        <div class="col">
+            <?= $form->field($model, 'products')->widget(MultipleInput::className(), [
+                'max' => 1000,
+                'min' => 1,
+                'cloneButton' => true,
+                'iconSource' => MultipleInput::ICONS_SOURCE_FONTAWESOME,
+                'columns' => Yii::$app->grid->setDynamicColumns($form, $model),
+            ])->label(false); ?>
 
-    <?= $form->field($model, 'documents')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
 
     <?= $form->field($model, 'documents_comment')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <?= Yii::$app->grid->setStatus($form, $model) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Сохранить' : 'Обновить', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php $js = <<<JS
+    $('#types').change(function() {
+      window.location.href = window.location.pathname +"?type=" + $(this).val();
+    });
+JS;
+$this->registerJs($js)
+?>

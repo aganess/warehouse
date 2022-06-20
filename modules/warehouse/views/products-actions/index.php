@@ -9,15 +9,15 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\modules\warehouse\models\products\search\ProductsActionsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Products Actions';
+$this->title = 'Действия';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="products-actions-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title) ?></h3>
 
     <p>
-        <?= Html::a('Create Products Actions', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'updated_at',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, ProductsActions $model, $key, $index, $column) {
+                'urlCreator' => function ($action,  $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],

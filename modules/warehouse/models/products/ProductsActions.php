@@ -2,7 +2,14 @@
 
 namespace app\modules\warehouse\models\products;
 
+use app\config\components\Common;
+use app\modules\warehouse\models\measurement\Measurement;
+use app\modules\warehouse\models\products\query\ProductsActionsQuery;
 use Yii;
+use yii\base\Exception;
+use yii\helpers\ArrayHelper;
+use yii\helpers\FileHelper;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "products_actions".
@@ -18,10 +25,24 @@ use Yii;
  * @property string|null $documents_comment
  * @property int|null $status
  * @property string|null $created_at
+ * @property-read string[] $allTypes
+ * @property-read string[] $allObjects
+ * @property-read array $allMeasurement
  * @property string|null $updated_at
  */
 class ProductsActions extends \yii\db\ActiveRecord
 {
+    public $type;
+    public $file;
+
+    const INVENTORY_WAREHOUSE = 1;
+    const INVENTORY_EMPLOYEE = 2;
+    const RECEIPT_GOODS_WAREHOUSE = 3;
+    const TRANSFER_OBJECT_EMPLOYEE = 4;
+
+    protected $attachment_path = '/attachments/';
+    protected $ampersand = '/';
+
     /**
      * {@inheritdoc}
      */
@@ -36,11 +57,12 @@ class ProductsActions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['date', 'who', 'from', 'to'], 'required'],
+            [['date'], 'required'],
             [['object_id', 'status'], 'integer'],
             [['documents_comment'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'type', 'who', 'from', 'to'], 'safe'],
             [['date', 'who', 'phone', 'from', 'to', 'documents'], 'string', 'max' => 255],
+            ['file', 'file'],
         ];
     }
 
@@ -50,27 +72,81 @@ class ProductsActions extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'date' => 'Date',
-            'who' => 'Who',
-            'phone' => 'Phone',
-            'from' => 'From',
-            'to' => 'To',
-            'object_id' => 'Object ID',
-            'documents' => 'Documents',
-            'documents_comment' => 'Documents Comment',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id' => 'ИД',
+            'date' => 'Дата',
+            'who' => 'Кто',
+            'phone' => 'Телефон',
+            'from' => 'От кого',
+            'to' => 'Кому',
+            'object_id' => 'Объек',
+            'documents' => 'Документ',
+            'file' => 'Документ',
+            'documents_comment' => 'Комментарий к документу',
+            'type' => 'Выберите тип действия',
+            'status' => 'Статус',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата обновления',
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAllTypes(): array
+    {
+        return [
+            self::INVENTORY_WAREHOUSE => 'Инвентаризация склада',
+            self::INVENTORY_EMPLOYEE => 'Инвентаризация сотрудника',
+            self::RECEIPT_GOODS_WAREHOUSE => 'Поступление товара на склад',
+            self::TRANSFER_OBJECT_EMPLOYEE => 'Передача на объект / сотруднику',
+        ];
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool
+     * @throws Exception
+     */
+    public function beforeSave($insert): bool
+    {
+        Yii::setAlias('@attachments', (dirname(__DIR__, 4)) . '/web/attachments');
+
+        if ($file = UploadedFile::getInstance($this, 'file')) {
+            FileHelper::createDirectory(Yii::getAlias('@attachments/actions')) ;
+            $dir = Yii::getAlias('@attachments/actions/') ;
+            $this->documents = Yii::$app->getSecurity()->generateRandomString(32) . '.' . $file->extension;
+
+            $file->saveAs($dir . $this->documents);
+        };
+
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllMeasurement(): array
+    {
+        return ArrayHelper::map(Measurement::find()->where(['status' => 1])->asArray()->all(), 'id', 'title');
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAllObjects(): array
+    {
+        return [
+            1 => 'Склад',
+            2 => 'Сотрудник',
         ];
     }
 
     /**
      * {@inheritdoc}
-     * @return \app\modules\warehouse\models\products\query\ProductsActionsQuery the active query used by this AR class.
+     * @return ProductsActionsQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\modules\warehouse\models\products\query\ProductsActionsQuery(get_called_class());
+        return new ProductsActionsQuery(get_called_class());
     }
 }

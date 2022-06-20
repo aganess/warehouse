@@ -15,13 +15,13 @@ class m220615_165442_create_products_actions_table extends Migration
         $this->createTable('{{%products_actions}}', [
             'id' => $this->primaryKey(),
             'date' => $this->string()->notNull(),
-            'who' => $this->string()->notNull(),
+            'who' => $this->string()->null(),
             'phone' => $this->string()->null(),
-            'from' => $this->string()->notNull(),
-            'to' => $this->string()->notNull(),
+            'from' => $this->string()->null(),
+            'to' => $this->string()->null(),
             'object_id' =>  $this->integer()->null(),
-            'documents' => $this->string()->defaultValue(null),
-            'documents_comment' => $this->text()->defaultValue(null),
+            'documents' => $this->string()->null(),
+            'documents_comment' => $this->text()->null(),
 
             'status' => $this->smallInteger()->defaultValue(1),
             'created_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP'),
