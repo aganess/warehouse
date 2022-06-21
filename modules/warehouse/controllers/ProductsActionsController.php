@@ -86,11 +86,11 @@ class ProductsActionsController extends Controller
             if ($model->load($this->request->post())) {
                 $postData = $this->request->post('ProductsActions');
 
+                $actionService = new ActionsService($postData);
+
                 switch ($defaultType) {
                     case ProductsActions::INVENTORY_WAREHOUSE:
                     case ProductsActions::INVENTORY_EMPLOYEE:
-
-                        $actionService = new ActionsService($postData);
                         $save = $actionService->createTypeOneAnsTwo();
 
                         if ($save['createdId']) {
@@ -107,8 +107,6 @@ class ProductsActionsController extends Controller
                         break;
 
                     case ProductsActions::RECEIPT_GOODS_WAREHOUSE:
-
-                        $actionService = new ActionsService($postData);
                         $save = $actionService->createTypeThree();
 
                         if ($save['createdId']) {
@@ -124,7 +122,6 @@ class ProductsActionsController extends Controller
                         }
                         break;
                     case ProductsActions::TRANSFER_OBJECT_EMPLOYEE:
-                        $actionService = new ActionsService($postData);
                         $save = $actionService->createFour();
 
                         if ($save['createdId']) {
@@ -154,24 +151,81 @@ class ProductsActionsController extends Controller
 
     /**
      * @param $id
-     * @return string|Response
+     * @return string
      * @throws NotFoundHttpException
+     * @throws \yii\db\Exception
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $defaultType = 1;
+        $defaultType = $model->product->actions_type;
 
-        if (!empty($this->request->get('type'))) {
-            $defaultType = $this->request->get('type');
-        }
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                $postData = $this->request->post('ProductsActions');
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+                $actionService = new ActionsService($postData, true, $model->id);
+
+                switch ($defaultType) {
+                    case ProductsActions::INVENTORY_WAREHOUSE:
+                    case ProductsActions::INVENTORY_EMPLOYEE:
+                        $save = $actionService->createTypeOneAnsTwo();
+
+                        if ($save['createdId']) {
+                            $q = Yii::$app->db->createCommand()
+                                ->update('products_actions_data',
+                                    [
+                                        'data' => Json::encode($postData['products'])
+                                    ],
+                                    'actions_id = \'' . $model->id . '\'');
+
+                            if ($q->execute()) {
+                                $this->redirect(['/warehouse/products-actions/index'], 302);
+                            }
+                        }
+                        break;
+
+                    case ProductsActions::RECEIPT_GOODS_WAREHOUSE:
+                        $save = $actionService->createTypeThree();
+
+                        if ($save['createdId']) {
+                            $q = Yii::$app->db->createCommand()
+                                ->update('products_actions_data',
+                                    [
+                                        'data' => Json::encode($postData['products'])
+                                    ],
+                                    'actions_id = \'' . $model->id . '\'');
+
+                            if ($q->execute()) {
+                                $this->redirect(['/warehouse/products-actions/index'], 302);
+                            }
+                        }
+                        break;
+                    case ProductsActions::TRANSFER_OBJECT_EMPLOYEE:
+                        $save = $actionService->createFour();
+
+                        if ($save['createdId']) {
+                            $q = Yii::$app->db->createCommand()
+                                ->update('products_actions_data',
+                                    [
+                                        'data' => Json::encode($postData['products'])
+                                    ],
+                                    'actions_id = \'' . $model->id . '\'');
+
+                            if ($q->execute()) {
+                                $this->redirect(['/warehouse/products-actions/index'], 302);
+                            }
+                        }
+                        break;
+                }
+
+            }
+        } else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('update', [
-            'model'       => $model,
+            'model' => $model,
             'defaultType' => $defaultType,
         ]);
     }

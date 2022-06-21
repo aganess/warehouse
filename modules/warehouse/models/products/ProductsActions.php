@@ -7,6 +7,7 @@ use app\modules\warehouse\models\measurement\Measurement;
 use app\modules\warehouse\models\products\query\ProductsActionsQuery;
 use Yii;
 use yii\base\Exception;
+use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
@@ -28,12 +29,15 @@ use yii\web\UploadedFile;
  * @property-read string[] $allTypes
  * @property-read string[] $allObjects
  * @property-read array $allMeasurement
+ * @property-read ProductsActionsData $product
  * @property string|null $updated_at
  */
 class ProductsActions extends \yii\db\ActiveRecord
 {
     public $type;
     public $file;
+
+    public $products;
 
     const INVENTORY_WAREHOUSE = 1;
     const INVENTORY_EMPLOYEE = 2;
@@ -52,6 +56,17 @@ class ProductsActions extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return void
+     */
+    public function init()
+    {
+        parent::init();
+
+        $action_id = Yii::$app->request->get('id');
+        $this->products = Yii::$app->grid->getDynamicColumns($action_id);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
@@ -60,7 +75,7 @@ class ProductsActions extends \yii\db\ActiveRecord
             [['date'], 'required'],
             [['object_id', 'status'], 'integer'],
             [['documents_comment'], 'string'],
-            [['created_at', 'updated_at', 'type', 'who', 'from', 'to'], 'safe'],
+            [['created_at', 'updated_at', 'type', 'who', 'from', 'to', 'products'], 'safe'],
             [['date', 'who', 'phone', 'from', 'to', 'documents'], 'string', 'max' => 255],
             ['file', 'file'],
         ];
@@ -112,8 +127,8 @@ class ProductsActions extends \yii\db\ActiveRecord
         Yii::setAlias('@attachments', (dirname(__DIR__, 4)) . '/web/attachments');
 
         if ($file = UploadedFile::getInstance($this, 'file')) {
-            FileHelper::createDirectory(Yii::getAlias('@attachments/actions')) ;
-            $dir = Yii::getAlias('@attachments/actions/') ;
+            FileHelper::createDirectory(Yii::getAlias('@attachments/actions'));
+            $dir = Yii::getAlias('@attachments/actions/');
             $this->documents = Yii::$app->getSecurity()->generateRandomString(32) . '.' . $file->extension;
 
             $file->saveAs($dir . $this->documents);
@@ -139,6 +154,24 @@ class ProductsActions extends \yii\db\ActiveRecord
             1 => 'Склад',
             2 => 'Сотрудник',
         ];
+    }
+
+    /**
+     * @param $product_id
+     * @return string
+     */
+    public function getOneProductName($product_id): string
+    {
+        $product = Products::findOne(['id' => $product_id]);
+        return $product->title;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getProduct(): ActiveQuery
+    {
+        return $this->hasOne(ProductsActionsData::className(), ['actions_id' => 'id']);
     }
 
     /**

@@ -4,10 +4,12 @@ namespace app\config\components\grid;
 
 use app\config\components\Common;
 use app\modules\warehouse\models\products\ProductModifications;
+use app\modules\warehouse\models\products\ProductsActionsData;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\base\Component;
 use kartik\select2\Select2;
+use yii\helpers\Json;
 use yii\widgets\ActiveForm;
 use yii\web\JsExpression;
 
@@ -169,5 +171,33 @@ class GridViewConverter extends Component
 
         return array_merge($data, $modData);
 
+    }
+
+    /**
+     * @param $action_id
+     * @return array|void
+     */
+    public function getDynamicColumns($action_id)
+    {
+        $result = $this->getActionData($action_id);
+        $data = [];
+
+        if ($result) {
+            foreach ($result as $value) {
+                $data[] = $value;
+            }
+            return $data;
+        }
+    }
+
+    /**
+     * @param $action_id
+     * @return mixed|null
+     */
+    protected function getActionData($action_id)
+    {
+        $product_action = ProductsActionsData::find()->where(['status' => 1])->andWhere(['actions_id' => $action_id])->one();
+
+        return Json::decode($product_action->data);
     }
 }

@@ -34,7 +34,8 @@ $this->registerCss($css);
 
     <?php $model->type = $defaultType ?>
     <?= $form->field($model, 'type')->dropDownList($model->getAllTypes(), [
-        'id' => 'types'
+        'id'       => 'types',
+        'disabled' => Yii::$app->controller->action->id === 'update' ? 'disables' : false
     ]) ?>
 
     <?php if ($defaultType == 1) : ?>
@@ -89,6 +90,19 @@ $this->registerCss($css);
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php if (!empty($model->products)):?>
+    <?php foreach ($model->products as $key => $product) :?>
+        <?php $product_name = $model->getOneProductName($product['product_id']) ; $k = $key; ?>
+        <?php $js = <<<JS
+    var  key = "$k";
+    $('#select2-productsactions-products-' + key + '-product_id-container').text("$product_name");
+JS;
+        $this->registerJs($js)
+        ?>
+    <?php endforeach;?>
+<?php endif;?>
+
 
 <?php $js = <<<JS
     $('#types').change(function() {
