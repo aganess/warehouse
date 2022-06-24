@@ -27,7 +27,13 @@ use unclead\multipleinput\MultipleInput;
         ]); ?>
     </div>
     <div class="col">
-        <?= $form->field($model, 'who')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'to')->widget(Select2::classname(), [
+            'data' => $model->getAllUsers(),
+            'options' => ['placeholder' => 'Выберите значение ...'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ]) ?>
     </div>
     <div class="col">
         <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>

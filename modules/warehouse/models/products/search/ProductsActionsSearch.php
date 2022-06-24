@@ -17,8 +17,8 @@ class ProductsActionsSearch extends ProductsActions
     public function rules()
     {
         return [
-            [['id', 'object_id', 'status'], 'integer'],
-            [['date', 'who', 'phone', 'from', 'to', 'documents', 'documents_comment', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'status'], 'integer'],
+            [['date',  'phone', 'from', 'to', 'documents', 'documents_comment', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -59,14 +59,12 @@ class ProductsActionsSearch extends ProductsActions
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'object_id' => $this->object_id,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'date', $this->date])
-            ->andFilterWhere(['like', 'who', $this->who])
             ->andFilterWhere(['like', 'phone', $this->phone])
             ->andFilterWhere(['like', 'from', $this->from])
             ->andFilterWhere(['like', 'to', $this->to])

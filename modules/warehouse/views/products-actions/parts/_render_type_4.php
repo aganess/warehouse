@@ -3,6 +3,7 @@
 /* @var $model ProductsActions */
 
 /* @var $form yii\widgets\ActiveForm */
+
 /* @var $defaultType integer */
 
 use app\modules\warehouse\models\products\ProductsActions;
@@ -26,9 +27,22 @@ use unclead\multipleinput\MultipleInput;
         ]); ?>
     </div>
     <div class="col">
-        <?= $form->field($model, 'object_id')->dropDownList(
-            $model->getAllObjects()
-        ) ?>
+        <?= $form->field($model, 'to')->widget(Select2::classname(), [
+            'data' => $model->getAllWarehouses(),
+            'options' => ['placeholder' => 'Выберите значение ...'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ])->label('От кого') ?>
+    </div>
+    <div class="col">
+        <?= $form->field($model, 'from')->widget(Select2::classname(), [
+            'data' => $model->getAllUsersOrObjects(),
+            'options' => ['placeholder' => 'Выберите значение ...'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ])->label('Получатель') ?>
     </div>
     <div class="col">
         <?= $form->field($model, 'file')->fileInput() ?>

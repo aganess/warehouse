@@ -3,6 +3,7 @@
 /* @var $model ProductsActions */
 
 /* @var $form yii\widgets\ActiveForm */
+
 /* @var $defaultType integer */
 
 use app\modules\warehouse\models\products\ProductsActions;
@@ -26,7 +27,22 @@ use unclead\multipleinput\MultipleInput;
         ]); ?>
     </div>
     <div class="col">
-        <?= $form->field($model, 'who')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'to')->widget(Select2::classname(), [
+            'data' => $model->getAllUsers(),
+            'options' => ['placeholder' => 'Выберите значение ...'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ]) ?>
+    </div>
+    <div class="col">
+        <?= $form->field($model, 'from')->widget(Select2::classname(), [
+            'data' => $model->getAllWarehouses(),
+            'options' => ['placeholder' => 'Выберите значение ...'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ]) ?>
     </div>
     <div class="col">
         <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
