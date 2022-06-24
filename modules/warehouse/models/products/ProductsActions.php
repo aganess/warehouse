@@ -3,6 +3,7 @@
 namespace app\modules\warehouse\models\products;
 
 use app\config\components\Common;
+use app\models\User;
 use app\modules\warehouse\models\measurement\Measurement;
 use app\modules\warehouse\models\Objects;
 use app\modules\warehouse\models\products\query\ProductsActionsQuery;
@@ -21,11 +22,12 @@ use yii\web\UploadedFile;
  *
  * @property int $id
  * @property string $date
- * @property string $who
  * @property string|null $phone
  * @property string $from
+ * @property string $action_type
  * @property string $to
- * @property int|null $object_id
+ * @property string $entity_from
+ * @property string $entity_to
  * @property string|null $documents
  * @property string|null $documents_comment
  * @property int|null $status
@@ -81,7 +83,7 @@ class ProductsActions extends \yii\db\ActiveRecord
             [['date'], 'required'],
             [['status'], 'integer'],
             [['documents_comment'], 'string'],
-            [['created_at', 'updated_at', 'type', 'from', 'to', 'entity_from', 'entity_to', 'products'], 'safe'],
+            [['created_at', 'updated_at', 'type', 'from', 'to', 'entity_from', 'entity_to', 'products', 'action_type'], 'safe'],
             [['date', 'phone', 'from', 'to', 'documents'], 'string', 'max' => 255],
             ['file', 'file'],
         ];
@@ -211,8 +213,8 @@ class ProductsActions extends \yii\db\ActiveRecord
         $providers = Providers::find()->where(['status' => 1])->all();
 
         return [
-            'Пользователи' => ArrayHelper::map($users, 'id', 'username'),
-            'Контрагенты' => ArrayHelper::map($providers, 'id', 'title'),
+            'Пользователи' => ArrayHelper::map($users, 'username', 'username', true),
+            'Контрагенты' => ArrayHelper::map($providers, 'id', 'title', true),
         ];
     }
 
@@ -226,9 +228,20 @@ class ProductsActions extends \yii\db\ActiveRecord
         $objects = Objects::find()->where(['status' => 1])->all();
 
         return [
-            'Пользователи' => ArrayHelper::map($users, 'id', 'username'),
-            'Объекты ' => ArrayHelper::map($objects, 'id', 'title'),
+            'Пользователи' => ArrayHelper::map($users, 'username', 'username', true),
+            'Объекты ' => ArrayHelper::map($objects, 'id', 'title', true),
         ];
+    }
+
+    /**
+     * @param $username
+     * @return int|void
+     */
+    public function getUserIdByUsername($username)
+    {
+        if ($username) {
+            return Users::findOne(['username' => $username])->id;
+        }
     }
 
     /**

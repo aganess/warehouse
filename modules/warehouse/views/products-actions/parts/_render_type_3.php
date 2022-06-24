@@ -42,7 +42,7 @@ use unclead\multipleinput\MultipleInput;
             'pluginOptions' => [
                 'allowClear' => true
             ],
-        ])?>
+        ]) ?>
     </div>
     <div class="col">
         <?= $form->field($model, 'file')->fileInput() ?>

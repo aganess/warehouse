@@ -90,8 +90,8 @@ class ProductsActionsController extends Controller
 
                 switch ($defaultType) {
                     case ProductsActions::INVENTORY_WAREHOUSE:
-                    case ProductsActions::INVENTORY_EMPLOYEE:
-                        $save = $actionService->createTypeOneAnsTwo();
+
+                        $save = $actionService->createTypeOne();
 
                         if ($save['createdId']) {
                             $q = Yii::$app->db->createCommand()->batchInsert('products_actions_data',
@@ -104,6 +104,22 @@ class ProductsActionsController extends Controller
                                 $this->redirect(['/warehouse/products-actions/index'], 302);
                             }
                         }
+                        break;
+                    case ProductsActions::INVENTORY_EMPLOYEE:
+                        $save = $actionService->createTypeTwo();
+
+                        if ($save['createdId']) {
+                            $q = Yii::$app->db->createCommand()->batchInsert('products_actions_data',
+                                ['actions_id', 'actions_type', 'data'],
+                                [
+                                    [$save['createdId'], $defaultType, Json::encode($postData['products'])],
+                                ]
+                            );
+                            if ($q->execute()) {
+                                $this->redirect(['/warehouse/products-actions/index'], 302);
+                            }
+                        }
+
                         break;
 
                     case ProductsActions::RECEIPT_GOODS_WAREHOUSE:

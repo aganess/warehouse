@@ -31,14 +31,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'date',
-            'who',
+
             'phone',
             'from',
             'to',
-            'object_id',
+
             'documents',
             'documents_comment:ntext',
-            'status',
+            Yii::$app->grid->getStatus(),
             'created_at',
             'updated_at',
         ],

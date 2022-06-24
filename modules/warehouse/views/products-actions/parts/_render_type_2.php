@@ -36,7 +36,9 @@ use unclead\multipleinput\MultipleInput;
         ]) ?>
     </div>
     <div class="col">
-        <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'phone')->widget(\yii\widgets\MaskedInput::class, [
+            'mask' => '+7(999)-999-9999',
+        ]) ?>
     </div>
     <div class="col">
         <?= $form->field($model, 'file')->fileInput() ?>
