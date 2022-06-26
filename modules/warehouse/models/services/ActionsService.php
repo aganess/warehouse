@@ -65,10 +65,10 @@ class ActionsService
     {
         $this->action->date = $this->data['date'];
         $this->action->action_type = $this->data['type'];
-        $this->action->to = $this->data['to'];
-        $this->action->entity_to = WarehouseEntities::getUserEvent();
-        $this->action->from = null;
-        $this->action->entity_from = null;
+        $this->action->to = null;
+        $this->action->entity_to = null;
+        $this->action->from = $this->data['from'];
+        $this->action->entity_from = WarehouseEntities::getUserEvent();
         $this->action->phone = $this->data['phone'];
         $this->action->documents_comment = $this->data['documents_comment'];
 
