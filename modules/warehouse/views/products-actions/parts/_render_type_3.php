@@ -29,6 +29,7 @@ use unclead\multipleinput\MultipleInput;
     <div class="col">
         <?= $form->field($model, 'to')->widget(Select2::classname(), [
             'data' => $model->getAllProvidersOrUsers(),
+            'value'=> $model->to ?? null,
             'options' => ['placeholder' => 'Выберите значение ...'],
             'pluginOptions' => [
                 'allowClear' => true
@@ -38,6 +39,7 @@ use unclead\multipleinput\MultipleInput;
     <div class="col">
         <?= $form->field($model, 'from')->widget(Select2::classname(), [
             'data' => $model->getAllWarehouses(),
+            'value'=> $model->from ?? null,
             'options' => ['placeholder' => 'Выберите значение ...'],
             'pluginOptions' => [
                 'allowClear' => true

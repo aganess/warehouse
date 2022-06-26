@@ -184,8 +184,25 @@ class ProductsActionsController extends Controller
 
                 switch ($defaultType) {
                     case ProductsActions::INVENTORY_WAREHOUSE:
+
+                        $save = $actionService->createTypeOne();
+
+                        if ($save['createdId']) {
+                            $q = Yii::$app->db->createCommand()
+                                ->update('products_actions_data',
+                                    [
+                                        'data' => Json::encode($postData['products'])
+                                    ],
+                                    'actions_id = \'' . $model->id . '\'');
+
+                            if ($q->execute()) {
+                                $this->redirect(['/warehouse/products-actions/index'], 302);
+                            }
+                        }
+                        break;
+
                     case ProductsActions::INVENTORY_EMPLOYEE:
-                        $save = $actionService->createTypeOneAnsTwo();
+                        $save = $actionService->createTypeTwo();
 
                         if ($save['createdId']) {
                             $q = Yii::$app->db->createCommand()

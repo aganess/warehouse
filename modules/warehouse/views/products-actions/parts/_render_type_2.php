@@ -16,7 +16,6 @@ use unclead\multipleinput\MultipleInput;
 
 ?>
 
-
 <div class="form-row">
     <div class="col">
         <?= $form->field($model, 'date')->widget(\kartik\date\DatePicker::classname(), [
@@ -29,6 +28,7 @@ use unclead\multipleinput\MultipleInput;
     <div class="col">
         <?= $form->field($model, 'from')->widget(Select2::classname(), [
             'data' => $model->getAllUsers(),
+            'value'=> $model->from ?? null,
             'options' => ['placeholder' => 'Выберите значение ...'],
             'pluginOptions' => [
                 'allowClear' => true

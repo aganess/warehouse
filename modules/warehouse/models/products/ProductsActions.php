@@ -38,6 +38,9 @@ use yii\web\UploadedFile;
  * @property-read ProductsActionsData $product
  * @property-read array $allUsers
  * @property-read array $allProviders
+ * @property-read array $allWarehouses
+ * @property-read array $allUsersOrObjects
+ * @property-read array $allProvidersOrUsers
  * @property string|null $updated_at
  */
 class ProductsActions extends \yii\db\ActiveRecord
