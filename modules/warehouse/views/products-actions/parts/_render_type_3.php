@@ -27,7 +27,7 @@ use unclead\multipleinput\MultipleInput;
         ]); ?>
     </div>
     <div class="col">
-        <?= $form->field($model, 'to')->widget(Select2::classname(), [
+        <?= $form->field($model, 'from')->widget(Select2::classname(), [
             'data' => $model->getAllProvidersOrUsers(),
             'value'=> $model->to ?? null,
             'options' => ['placeholder' => 'Выберите значение ...'],
@@ -37,7 +37,7 @@ use unclead\multipleinput\MultipleInput;
         ])->label('От кого') ?>
     </div>
     <div class="col">
-        <?= $form->field($model, 'from')->widget(Select2::classname(), [
+        <?= $form->field($model, 'to')->widget(Select2::classname(), [
             'data' => $model->getAllWarehouses(),
             'value'=> $model->from ?? null,
             'options' => ['placeholder' => 'Выберите значение ...'],

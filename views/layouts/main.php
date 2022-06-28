@@ -40,6 +40,8 @@ AppAsset::register($this);
             ['label' => 'Главная', 'url' => ['/warehouse']],
             ['label' => 'Продукты', 'url' => ['/warehouse/products']],
             ['label' => 'Склады', 'url' => ['/warehouse/warehouses']],
+            ['label' => 'Пользователи', 'url' => ['/warehouse/users']],
+            ['label' => 'Объекты ', 'url' => ['/warehouse/objects']],
             ['label' => 'Номенклатурные группы', 'url' => ['/warehouse/nomenclature-groups']],
             ['label' => 'Действия',  'items' => [
                 ['label' => 'Единицы измерения', 'url' => '/warehouse/measurement'],
