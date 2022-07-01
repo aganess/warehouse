@@ -20,6 +20,9 @@ $config = [
         'common' => [
             'class' => 'app\config\components\Common',
         ],
+        'getter' => [
+            'class' => 'app\config\components\Getter',
+        ],
         'grid' => [
             'class' => 'app\config\components\grid\GridViewConverter',
         ],
