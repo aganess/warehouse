@@ -55,10 +55,10 @@ class Products extends \yii\db\ActiveRecord
             [['group_id', 'measurement_id', 'status'], 'integer'],
             [['description'], 'string'],
             [['quantity'], 'number'],
-            [['created_at', 'updated_at',  'slug'], 'safe'],
+            [['created_at', 'updated_at', 'slug'], 'safe'],
             [['title', 'manufacturer', 'article', 'inventory_number', 'expiration_date', 'img'], 'string', 'max' => 255],
             [['slug'], 'string', 'max' => 64],
-            ['file','file']
+            ['file', 'file']
         ];
     }
 
@@ -92,7 +92,7 @@ class Products extends \yii\db\ActiveRecord
      */
     public function getMeasurements(): array
     {
-        return ArrayHelper::map(Measurement::find()->where(['status'=>1])->asArray()->all(),'id','title');
+        return ArrayHelper::map(Measurement::find()->where(['status' => 1])->asArray()->all(), 'id', 'title');
     }
 
     /**
@@ -100,7 +100,7 @@ class Products extends \yii\db\ActiveRecord
      */
     public function getGroups(): array
     {
-        return ArrayHelper::map(NomenclatureGroups::find()->where(['status'=>1])->asArray()->all(),'id','title');
+        return ArrayHelper::map(NomenclatureGroups::find()->where(['status' => 1])->asArray()->all(), 'id', 'title');
     }
 
     /**
@@ -108,7 +108,7 @@ class Products extends \yii\db\ActiveRecord
      */
     public function getGroup(): ActiveQuery
     {
-        return $this->hasOne(NomenclatureGroups::className(),['id'=>'group_id']);
+        return $this->hasOne(NomenclatureGroups::className(), ['id' => 'group_id']);
     }
 
     /**
@@ -116,7 +116,7 @@ class Products extends \yii\db\ActiveRecord
      */
     public function getMeasurement(): ActiveQuery
     {
-        return $this->hasOne(Measurement::className(),['id'=>'measurement_id']);
+        return $this->hasOne(Measurement::className(), ['id' => 'measurement_id']);
     }
 
     /**

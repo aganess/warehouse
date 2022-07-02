@@ -2,11 +2,18 @@
 
 namespace app\modules\warehouse\controllers;
 
+use app\modules\warehouse\models\products\ProductsActions;
+use app\modules\warehouse\models\WarehouseEntities;
+use Yii;
+use yii\web\Response;
+use yii\helpers\ArrayHelper;
+use yii\web\Controller;
+use yii\filters\VerbFilter;
+use app\config\components\Common;
+use yii\web\NotFoundHttpException;
 use app\modules\warehouse\models\Users;
 use app\modules\warehouse\models\search\UsersSearch;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use app\modules\warehouse\models\products\search\ProductsActionsSearch;
 
 /**
  * UsersController implements the CRUD actions for Users model.
@@ -55,15 +62,21 @@ class UsersController extends Controller
      */
     public function actionView($id)
     {
+        $searchModel = new ProductsActionsSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams, ProductsActions::TRANSFER_OBJECT_EMPLOYEE, WarehouseEntities::getUserEvent());
+
+        $data = Yii::$app->getter->getExtDataByFilter($dataProvider->getModels());
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'data' => $data
         ]);
     }
 
     /**
      * Creates a new Users model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionCreate()
     {
@@ -86,7 +99,7 @@ class UsersController extends Controller
      * Updates an existing Users model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
-     * @return string|\yii\web\Response
+     * @return string|Response
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
@@ -106,7 +119,7 @@ class UsersController extends Controller
      * Deletes an existing Users model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
-     * @return \yii\web\Response
+     * @return Response
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)

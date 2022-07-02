@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
+/* @var $data array */
 /* @var $model app\modules\warehouse\models\Objects */
 
 $this->title = $model->title;
@@ -38,4 +39,25 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    <br>
+    <?php if (!empty($data)): ?>
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Продукт</th>
+                <th scope="col">Количество</th>
+                <th scope="col">Единицы измерения</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($data as $key => $value): ?>
+                <tr>
+                    <td ><?= $value['name'] ?></td>
+                    <td ><?= $value['count'] ?></td>
+                    <td ><?= $value['measurement'] ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
 </div>

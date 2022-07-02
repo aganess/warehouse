@@ -2,6 +2,7 @@
 
 namespace app\modules\warehouse\models\products\search;
 
+use app\config\components\Common;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\warehouse\models\products\ProductsActions;
@@ -17,8 +18,8 @@ class ProductsActionsSearch extends ProductsActions
     public function rules()
     {
         return [
-            [['id', 'status'], 'integer'],
-            [['date',  'phone', 'from', 'to', 'documents', 'documents_comment', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'action_type', 'status'], 'integer'],
+            [['date', 'phone', 'entity_from', 'from', 'entity_to', 'to', 'documents', 'documents_comment', 'created_at', 'updated_at', 'who'], 'safe'],
         ];
     }
 
@@ -31,16 +32,21 @@ class ProductsActionsSearch extends ProductsActions
         return Model::scenarios();
     }
 
+
     /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
+     * @param $params
+     * @param $action_type
+     * @param $entity
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $action_type = null, $entity = null): ActiveDataProvider
     {
-        $query = ProductsActions::find();
+        $query = ProductsActions::find()->with('productsData.extData');
+
+        if ($entity) {
+            $query->andWhere(['action_type' => $action_type])->andWhere(['entity_to' => $entity])->andWhere(['to' => $params['id']]);
+        }
+
 
         // add conditions that should always apply here
 
@@ -59,6 +65,7 @@ class ProductsActionsSearch extends ProductsActions
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'action_type' => $this->action_type,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -66,10 +73,13 @@ class ProductsActionsSearch extends ProductsActions
 
         $query->andFilterWhere(['like', 'date', $this->date])
             ->andFilterWhere(['like', 'phone', $this->phone])
+            ->andFilterWhere(['like', 'entity_from', $this->entity_from])
             ->andFilterWhere(['like', 'from', $this->from])
+            ->andFilterWhere(['like', 'entity_to', $this->entity_to])
             ->andFilterWhere(['like', 'to', $this->to])
             ->andFilterWhere(['like', 'documents', $this->documents])
-            ->andFilterWhere(['like', 'documents_comment', $this->documents_comment]);
+            ->andFilterWhere(['like', 'documents_comment', $this->documents_comment])
+           ;
 
         return $dataProvider;
     }

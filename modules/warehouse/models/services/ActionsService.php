@@ -142,7 +142,6 @@ class ActionsService
                     foreach ($product as $key => $value) {
                         $product_extender = new ProductsExtender();
 
-
                             $product_extender->key = Yii::$app->getter->getModificationIdBySlug($key);
                             $product_extender->product_action_data_id = $actions_data->id;
                             $product_extender->value = $value;

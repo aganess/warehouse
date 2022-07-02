@@ -86,7 +86,7 @@ class ProductsActionsController extends Controller
             if ($model->load($this->request->post())) {
                 $postData = $this->request->post('ProductsActions');
 
-                $actionService = new ActionsService($postData);
+                $actionService = new ActionsService($postData, false, false, $defaultType);
 
                 switch ($defaultType) {
                     case ProductsActions::INVENTORY_WAREHOUSE:
@@ -121,7 +121,6 @@ class ProductsActionsController extends Controller
                         }
 
                         break;
-
                     case ProductsActions::RECEIPT_GOODS_WAREHOUSE:
                         $save = $actionService->createTypeThree();
 
@@ -137,20 +136,9 @@ class ProductsActionsController extends Controller
                             }
                         }
                         break;
-                    case ProductsActions::TRANSFER_OBJECT_EMPLOYEE:
-                        $save = $actionService->createFour();
 
-                        if ($save['createdId']) {
-                            $q = Yii::$app->db->createCommand()->batchInsert('products_actions_data',
-                                ['actions_id', 'actions_type', 'data'],
-                                [
-                                    [$save['createdId'], $defaultType, Json::encode($postData['products'])],
-                                ]
-                            );
-                            if ($q->execute()) {
-                                $this->redirect(['/warehouse/products-actions/index'], 302);
-                            }
-                        }
+                    case ProductsActions::TRANSFER_OBJECT_EMPLOYEE:
+                        $actionService->createFour();
                         break;
                 }
 
@@ -180,7 +168,7 @@ class ProductsActionsController extends Controller
             if ($model->load($this->request->post())) {
                 $postData = $this->request->post('ProductsActions');
 
-                $actionService = new ActionsService($postData, true, $model->id);
+                $actionService = new ActionsService($postData, true, $model->id, $defaultType);
 
                 switch ($defaultType) {
                     case ProductsActions::INVENTORY_WAREHOUSE:
@@ -188,16 +176,7 @@ class ProductsActionsController extends Controller
                         $save = $actionService->createTypeOne();
 
                         if ($save['createdId']) {
-                            $q = Yii::$app->db->createCommand()
-                                ->update('products_actions_data',
-                                    [
-                                        'data' => Json::encode($postData['products'])
-                                    ],
-                                    'actions_id = \'' . $model->id . '\'');
-
-                            if ($q->execute()) {
-                                $this->redirect(['/warehouse/products-actions/index'], 302);
-                            }
+                            $this->redirect(['/warehouse/products-actions/index'], 302);
                         }
                         break;
 

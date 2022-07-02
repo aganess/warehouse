@@ -4,6 +4,7 @@ namespace app\modules\warehouse\models\products;
 
 use app\modules\warehouse\models\products\query\ProductsActionsDataQuery;
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "products_actions_data".
@@ -58,6 +59,14 @@ class ProductsActionsData extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getExtData(): ActiveQuery
+    {
+        return $this->hasMany(ProductsExtender::className(),['product_action_data_id'=>'id']);
     }
 
     /**

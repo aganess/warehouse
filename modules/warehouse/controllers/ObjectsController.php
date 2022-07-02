@@ -2,8 +2,13 @@
 
 namespace app\modules\warehouse\controllers;
 
+use app\modules\warehouse\models\products\ProductsActions;
+use Yii;
+
 use app\modules\warehouse\models\Objects;
+use app\modules\warehouse\models\products\search\ProductsActionsSearch;
 use app\modules\warehouse\models\search\ObjectsSearch;
+use app\modules\warehouse\models\WarehouseEntities;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -55,7 +60,13 @@ class ObjectsController extends Controller
      */
     public function actionView($id)
     {
+        $searchModel = new ProductsActionsSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams, ProductsActions::TRANSFER_OBJECT_EMPLOYEE, WarehouseEntities::getObjectEvent());
+
+        $data = Yii::$app->getter->getExtDataByFilter($dataProvider->getModels());
+
         return $this->render('view', [
+            'data' => $data,
             'model' => $this->findModel($id),
         ]);
     }

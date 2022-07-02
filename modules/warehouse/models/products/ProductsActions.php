@@ -66,16 +66,16 @@ class ProductsActions extends \yii\db\ActiveRecord
         return 'products_actions';
     }
 
-    /**
-     * @return void
-     */
-    public function init()
-    {
-        parent::init();
-
-        $action_id = Yii::$app->request->get('id');
-        $this->products = Yii::$app->grid->getDynamicColumns($action_id);
-    }
+//    /**
+//     * @return void
+//     */
+//    public function init()
+//    {
+//        parent::init();
+//
+//        $action_id = Yii::$app->request->get('id');
+//        $this->products = Yii::$app->grid->getDynamicColumns($action_id);
+//    }
 
     /**
      * {@inheritdoc}
@@ -161,7 +161,7 @@ class ProductsActions extends \yii\db\ActiveRecord
      * @param $product_id
      * @return string
      */
-    public function getOneProductName($product_id): string
+    public function getOneProductName($product_id)
     {
         $product = Products::findOne(['id' => $product_id]);
         return $product->title;
@@ -245,6 +245,11 @@ class ProductsActions extends \yii\db\ActiveRecord
         if ($username) {
             return Users::findOne(['username' => $username])->id;
         }
+    }
+
+    public function getProductsData(): ActiveQuery
+    {
+        return $this->hasMany(ProductsActionsData::className(), ['actions_id' => 'id']);
     }
 
     /**

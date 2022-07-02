@@ -16,7 +16,7 @@ class m220701_155035_create_products_extender_table extends Migration
             'id' => $this->primaryKey(),
             'product_action_data_id' => $this->integer(),
             'key' => $this->integer(),
-            'value' => $this->integer(),
+            'value' => $this->string(),
 
             'status' => $this->smallInteger()->defaultValue(1),
             'created_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP'),
