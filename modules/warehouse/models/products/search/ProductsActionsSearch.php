@@ -98,4 +98,18 @@ class ProductsActionsSearch extends ProductsActions
             ->andWhere(['from' => $id])
             ->all();
     }
+
+    /**
+     * @param $id
+     * @return ProductsActions[]|array
+     */
+    public function searchBySendWarehouse($id): array
+    {
+        return  ProductsActions::find()->where(['status' => 1])
+            ->with('productsData.extData')
+            ->andWhere(['action_type' => ProductsActions::TRANSFER_OBJECT_EMPLOYEE])
+            ->andWhere(['entity_from' =>  WarehouseEntities::getWarehouseEvent()])
+            ->andWhere(['from' => $id])
+            ->all();
+    }
 }

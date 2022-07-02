@@ -34,7 +34,7 @@ class Getter extends Component
                     $productExtDataKey = $productExtData->key . ' ';
                     $productExtDataValue = $productExtData->value . ' ';
 
-                    $product_name .= $this->getModificationTitleById($productExtDataKey) . ": " . '<b>'.$productExtDataValue.'</b>';
+                    $product_name .= $this->getModificationTitleById($productExtDataKey) . ": " . '<b>'. $productExtDataValue . '</b>';
                     $global_key .= $productExtDataKey . $productExtDataValue;
                 }
 

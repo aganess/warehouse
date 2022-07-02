@@ -2,6 +2,11 @@
 
 namespace app\modules\warehouse\controllers;
 
+use Yii;
+use app\config\components\Common;
+use app\modules\warehouse\models\products\ProductsActions;
+use app\modules\warehouse\models\products\search\ProductsActionsSearch;
+use app\modules\warehouse\models\WarehouseEntities;
 use app\modules\warehouse\models\warehouses\Warehouses;
 use app\modules\warehouse\models\warehouses\search\WarehousesSearch;
 use yii\web\Controller;
@@ -55,7 +60,27 @@ class WarehousesController extends Controller
      */
     public function actionView($id)
     {
+        $searchModel = new ProductsActionsSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams, ProductsActions::RECEIPT_GOODS_WAREHOUSE, WarehouseEntities::getWarehouseEvent());
+
+        $data = Yii::$app->getter->getExtDataByFilter($dataProvider->getModels());
+        $send = Yii::$app->getter->getExtDataByFilter($searchModel->searchBySendWarehouse($id));
+
+        foreach ($send as $sdk => $sendData) {
+            if ($data[$sdk]) {
+                $data[$sdk]['count'] -= $sendData['count'];
+            } else {
+                foreach ($sendData as $key => $value) {
+                    if ($key === 'count') {
+                        $data[$sdk][$key] -= $value;
+                    }else {
+                        $data[$sdk][$key] = $value;
+                    }
+                }
+            }
+        }
         return $this->render('view', [
+            'data' => $data,
             'model' => $this->findModel($id),
         ]);
     }
