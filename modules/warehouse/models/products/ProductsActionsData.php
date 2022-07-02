@@ -2,6 +2,7 @@
 
 namespace app\modules\warehouse\models\products;
 
+use app\modules\warehouse\models\products\query\ProductsActionsDataQuery;
 use Yii;
 
 /**
@@ -9,10 +10,13 @@ use Yii;
  *
  * @property int $id
  * @property int $actions_id
+ * @property int $product_id
+ * @property int $quantity
+ * @property int $measurement
  * @property string $actions_type
- * @property string $data
  * @property int|null $status
  * @property string|null $created_at
+ * @property-read mixed $extData
  * @property string|null $updated_at
  */
 class ProductsActionsData extends \yii\db\ActiveRecord
@@ -31,9 +35,9 @@ class ProductsActionsData extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['actions_id', 'actions_type', 'data'], 'required'],
+            [['actions_id', 'actions_type', 'product_id'], 'required'],
             [['actions_id', 'status'], 'integer'],
-            [['data'], 'string'],
+            [['product_id', 'quantity', 'measurement'], 'safe'],
             [['created_at', 'updated_at'], 'safe'],
             [['actions_type'], 'string', 'max' => 255],
         ];
@@ -48,7 +52,8 @@ class ProductsActionsData extends \yii\db\ActiveRecord
             'id' => 'ID',
             'actions_id' => 'Actions ID',
             'actions_type' => 'Actions Type',
-            'data' => 'Data',
+            'quantity' => 'Quantity',
+            'measurement' => 'Measurement',
             'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -57,10 +62,10 @@ class ProductsActionsData extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return \app\modules\warehouse\models\products\query\ProductsActionsDataQuery the active query used by this AR class.
+     * @return ProductsActionsDataQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\modules\warehouse\models\products\query\ProductsActionsDataQuery(get_called_class());
+        return new ProductsActionsDataQuery(get_called_class());
     }
 }

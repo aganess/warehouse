@@ -13,6 +13,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property string $title
  * @property string $value
+ * @property string $slug
  * @property int|null $status
  * @property string|null $created_at
  * @property string|null $updated_at
