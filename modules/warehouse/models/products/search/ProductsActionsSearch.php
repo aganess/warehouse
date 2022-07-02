@@ -3,6 +3,7 @@
 namespace app\modules\warehouse\models\products\search;
 
 use app\config\components\Common;
+use app\modules\warehouse\models\WarehouseEntities;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\warehouse\models\products\ProductsActions;
@@ -82,5 +83,19 @@ class ProductsActionsSearch extends ProductsActions
            ;
 
         return $dataProvider;
+    }
+
+    /**
+     * @param $id
+     * @return ProductsActions[]|array
+     */
+    public function searchBySend($id): array
+    {
+      return  ProductsActions::find()->where(['status' => 1])
+            ->with('productsData.extData')
+            ->andWhere(['action_type' => ProductsActions::RECEIPT_GOODS_WAREHOUSE])
+            ->andWhere(['entity_from' =>  WarehouseEntities::getUserEvent()])
+            ->andWhere(['from' => $id])
+            ->all();
     }
 }

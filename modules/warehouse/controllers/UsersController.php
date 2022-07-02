@@ -60,12 +60,21 @@ class UsersController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($id): string
     {
         $searchModel = new ProductsActionsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams, ProductsActions::TRANSFER_OBJECT_EMPLOYEE, WarehouseEntities::getUserEvent());
 
         $data = Yii::$app->getter->getExtDataByFilter($dataProvider->getModels());
+        $send = Yii::$app->getter->getExtDataByFilter($searchModel->searchBySend($id));
+
+        foreach ($send as $sdk => $sendData) {
+            if ($data[$sdk]) {
+                $data[$sdk]['count'] -= $sendData['count'];
+            } else {
+                $data[$sdk] = $sendData;
+            }
+        }
 
         return $this->render('view', [
             'model' => $this->findModel($id),
