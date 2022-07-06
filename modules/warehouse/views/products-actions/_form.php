@@ -86,11 +86,19 @@ $this->registerCss($css);
 
     <?= $form->field($model, 'documents_comment')->textarea(['rows' => 6]) ?>
 
-    <?= Yii::$app->grid->setStatus($form, $model) ?>
+    <?php if ($defaultType != 5) : ?>
+        <?= Yii::$app->grid->setStatus($form, $model) ?>
+    <?php endif;?>
 
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Сохранить' : 'Обновить', ['class' => 'btn btn-success']) ?>
-    </div>
+    <?php if ($defaultType == 5) : ?>
+        <div class="form-group">
+            <?= Html::submitButton($model->isNewRecord ? 'Сохранить' : 'Одобрить', ['class' => 'btn btn-success']) ?>
+        </div>
+    <?php else :?>
+        <div class="form-group">
+            <?= Html::submitButton($model->isNewRecord ? 'Сохранить' : 'Обновить', ['class' => 'btn btn-success']) ?>
+        </div>
+    <?php endif;?>
 
     <?php ActiveForm::end(); ?>
 

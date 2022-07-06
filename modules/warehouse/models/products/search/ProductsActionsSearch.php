@@ -46,11 +46,11 @@ class ProductsActionsSearch extends ProductsActions
         $query = ProductsActions::find()->with('productsData.extData');
 
         if ($app_type) {
-            $query->andWhere(['action_type' => $action_type])->andWhere(['entity_to' => $entity])->andWhere(['status' => 0]);
+            $query->andWhere(['action_type' => $action_type])->andWhere(['entity_to' => $entity]);
         } elseif ($entity) {
             $query->andWhere(['action_type' => $action_type])->andWhere(['entity_to' => $entity])->andWhere(['to' => $params['id']])->andWhere(['status' => 1]);
-        }else {
-            $query->where(['status' => 1]);
+        } else {
+            $query->where(['status' => 1])->andWhere(['!=', 'action_type', 5]);
         }
 
         // add conditions that should always apply here

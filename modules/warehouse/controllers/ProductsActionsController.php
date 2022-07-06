@@ -49,7 +49,7 @@ class ProductsActionsController extends Controller
         if (!empty($type) && $type == 5) {
 
             $searchModel = new ProductsActionsSearch();
-            $dataProvider = $searchModel->search($this->request->queryParams, 5,'users',true);
+            $dataProvider = $searchModel->search($this->request->queryParams, 5, 'users', true);
 
             return $this->render('index-app', [
                 'searchModel' => $searchModel,
@@ -101,53 +101,14 @@ class ProductsActionsController extends Controller
 
                 switch ($defaultType) {
                     case ProductsActions::INVENTORY_WAREHOUSE:
-
-                        $save = $actionService->createTypeOne();
-
-                        if ($save['createdId']) {
-                            $q = Yii::$app->db->createCommand()->batchInsert('products_actions_data',
-                                ['actions_id', 'actions_type', 'data'],
-                                [
-                                    [$save['createdId'], $defaultType, Json::encode($postData['products'])],
-                                ]
-                            );
-                            if ($q->execute()) {
-                                $this->redirect(['/warehouse/products-actions/index'], 302);
-                            }
-                        }
+                        $actionService->createTypeOne();
                         break;
                     case ProductsActions::INVENTORY_EMPLOYEE:
-                        $save = $actionService->createTypeTwo();
-
-                        if ($save['createdId']) {
-                            $q = Yii::$app->db->createCommand()->batchInsert('products_actions_data',
-                                ['actions_id', 'actions_type', 'data'],
-                                [
-                                    [$save['createdId'], $defaultType, Json::encode($postData['products'])],
-                                ]
-                            );
-                            if ($q->execute()) {
-                                $this->redirect(['/warehouse/products-actions/index'], 302);
-                            }
-                        }
-
+                        $actionService->createTypeTwo();
                         break;
                     case ProductsActions::RECEIPT_GOODS_WAREHOUSE:
-                        $save = $actionService->createTypeThree();
-
-                        if ($save['createdId']) {
-                            $q = Yii::$app->db->createCommand()->batchInsert('products_actions_data',
-                                ['actions_id', 'actions_type', 'data'],
-                                [
-                                    [$save['createdId'], $defaultType, Json::encode($postData['products'])],
-                                ]
-                            );
-                            if ($q->execute()) {
-                                $this->redirect(['/warehouse/products-actions/index'], 302);
-                            }
-                        }
+                        $actionService->createTypeThree();
                         break;
-
                     case ProductsActions::TRANSFER_OBJECT_EMPLOYEE:
                         $actionService->createFour();
                         break;
@@ -186,62 +147,19 @@ class ProductsActionsController extends Controller
 
                 switch ($defaultType) {
                     case ProductsActions::INVENTORY_WAREHOUSE:
-
-                        $save = $actionService->createTypeOne();
-
-                        if ($save['createdId']) {
-                            $this->redirect(['/warehouse/products-actions/index'], 302);
-                        }
+                        $actionService->createTypeOne();
                         break;
-
                     case ProductsActions::INVENTORY_EMPLOYEE:
-                        $save = $actionService->createTypeTwo();
-
-                        if ($save['createdId']) {
-                            $q = Yii::$app->db->createCommand()
-                                ->update('products_actions_data',
-                                    [
-                                        'data' => Json::encode($postData['products'])
-                                    ],
-                                    'actions_id = \'' . $model->id . '\'');
-
-                            if ($q->execute()) {
-                                $this->redirect(['/warehouse/products-actions/index'], 302);
-                            }
-                        }
+                        $actionService->createTypeTwo();
                         break;
-
                     case ProductsActions::RECEIPT_GOODS_WAREHOUSE:
-                        $save = $actionService->createTypeThree();
-
-                        if ($save['createdId']) {
-                            $q = Yii::$app->db->createCommand()
-                                ->update('products_actions_data',
-                                    [
-                                        'data' => Json::encode($postData['products'])
-                                    ],
-                                    'actions_id = \'' . $model->id . '\'');
-
-                            if ($q->execute()) {
-                                $this->redirect(['/warehouse/products-actions/index'], 302);
-                            }
-                        }
+                        $actionService->createTypeThree();
                         break;
                     case ProductsActions::TRANSFER_OBJECT_EMPLOYEE:
-                        $save = $actionService->createFour();
-
-                        if ($save['createdId']) {
-                            $q = Yii::$app->db->createCommand()
-                                ->update('products_actions_data',
-                                    [
-                                        'data' => Json::encode($postData['products'])
-                                    ],
-                                    'actions_id = \'' . $model->id . '\'');
-
-                            if ($q->execute()) {
-                                $this->redirect(['/warehouse/products-actions/index'], 302);
-                            }
-                        }
+                        $actionService->createFour();
+                        break;
+                    case ProductsActions::TRANSFER_APP:
+                        $actionService->createFive();
                         break;
                 }
 

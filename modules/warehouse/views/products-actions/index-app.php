@@ -49,7 +49,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'address',
             'documents',
             'documents_comment:ntext',
-            Yii::$app->grid->getStatus(),
+            [
+                'attribute' => 'status',
+                'value' => function ($model) {
+                    return $model['status'] == 1 ? '<span style="color: green">Одобрено</span>' : '<span style="color: red">Не одобрено</span>';
+                },
+                'format' => 'raw'
+            ],
             'created_at',
             //'updated_at',
             [

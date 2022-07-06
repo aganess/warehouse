@@ -8,18 +8,21 @@ use app\modules\warehouse\models\products\ProductsActions;
 use app\modules\warehouse\models\products\ProductsActionsData;
 use app\modules\warehouse\models\products\ProductsExtender;
 use app\modules\warehouse\models\WarehouseEntities;
+use yii\db\Exception;
+use yii\db\Query;
 
 class ActionsService
 {
     public $data;
 
     /** @var ProductsActions $action */
-
     public $action;
+
+    public $flag;
+
     /**
      * @var array
      */
-
     public $type;
 
 
@@ -32,6 +35,7 @@ class ActionsService
     public function __construct($data, bool $updateFlag = false, $action_id = null, $type = null)
     {
         $this->data = $data;
+        $this->flag = $updateFlag;
         $this->action = new ProductsActions();
 
         if ($type) {
@@ -43,10 +47,14 @@ class ActionsService
     }
 
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function createTypeOne()
     {
         $this->action->date = $this->data['date'];
-        $this->action->action_type = !empty($this->type) ? $this->type : $this->data['type'];
+        $this->action->action_type = !empty($this->type) ? (string)$this->type : (string)$this->data['type'];
         $this->action->to = $this->data['to'];
         $this->action->entity_to = WarehouseEntities::getWarehouseEvent();
         $this->action->from = $this->data['from'];
@@ -56,15 +64,23 @@ class ActionsService
         $this->action->documents_comment = $this->data['documents_comment'];
 
         if ($this->action->save()) {
-            $this->saveExtenderProducts($this->action->id);
+            if ($this->flag) {
+                $this->updateExtenderProducts($this->action->id);
+            } else {
+                $this->saveExtenderProducts($this->action->id);
+            }
         }
     }
 
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function createTypeTwo()
     {
         $this->action->date = $this->data['date'];
-        $this->action->action_type = !empty($this->type) ? $this->type : $this->data['type'];
+        $this->action->action_type = !empty($this->type) ? (string)$this->type : (string)$this->data['type'];
         $this->action->to = null;
         $this->action->entity_to = null;
         $this->action->from = $this->data['from'];
@@ -73,19 +89,25 @@ class ActionsService
         $this->action->documents_comment = $this->data['documents_comment'];
 
         if ($this->action->save()) {
-            $this->saveExtenderProducts($this->action->id);
+            if ($this->flag) {
+                $this->updateExtenderProducts($this->action->id);
+            } else {
+                $this->saveExtenderProducts($this->action->id);
+            }
         }
     }
 
+
     /**
-     * @return array
+     * @return void
+     * @throws Exception
      */
     public function createTypeThree()
     {
         $checkType = $this->action->getUserIdByUsername($this->data['from']);
 
         $this->action->date = $this->data['date'];
-        $this->action->action_type = !empty($this->type) ? $this->type : $this->data['type'];
+        $this->action->action_type = !empty($this->type) ? (string)$this->type : (string)$this->data['type'];
         $this->action->to = (string)$this->data['to'];
         $this->action->entity_to = WarehouseEntities::getWarehouseEvent();
         $this->action->from = empty($checkType) ? (string)$this->data['from'] : (string)$checkType;
@@ -93,19 +115,24 @@ class ActionsService
         $this->action->documents_comment = $this->data['documents_comment'];
 
         if ($this->action->save()) {
-            $this->saveExtenderProducts($this->action->id);
+            if ($this->flag) {
+                $this->updateExtenderProducts($this->action->id);
+            } else {
+                $this->saveExtenderProducts($this->action->id);
+            }
         }
     }
 
 
     /**
      * @return void
+     * @throws Exception
      */
     public function createFour()
     {
         $checkType = $this->action->getUserIdByUsername($this->data['to']);
 
-        $this->action->action_type = !empty($this->type) ? $this->type : $this->data['type'];
+        $this->action->action_type = !empty($this->type) ? (string)$this->type : (string)$this->data['type'];
         $this->action->date = $this->data['date'];
         $this->action->from = $this->data['from'];
         $this->action->entity_from = WarehouseEntities::getWarehouseEvent();
@@ -114,16 +141,21 @@ class ActionsService
         $this->action->documents_comment = $this->data['documents_comment'];
 
         if ($this->action->save()) {
-            $this->saveExtenderProducts($this->action->id);
+            if ($this->flag) {
+                $this->updateExtenderProducts($this->action->id);
+            } else {
+                $this->saveExtenderProducts($this->action->id);
+            }
         }
     }
 
     /**
      * @return void
+     * @throws Exception
      */
     public function createFive()
     {
-        $this->action->action_type = !empty($this->type) ? $this->type : $this->data['type'];
+        $this->action->action_type = !empty($this->type) ? (string)$this->type : (string)$this->data['type'];
 
         $this->action->date = $this->data['date'];
         $this->action->from = $this->data['from'];
@@ -132,15 +164,21 @@ class ActionsService
         $this->action->how_send = $this->data['how_send'];
         $this->action->entity_from = null;
         $this->action->from = null;
-        $this->action->status = 0;
+        $this->action->status = $this->flag ? 1 : 0;
         $this->action->entity_to = WarehouseEntities::getUserEvent();
-        $this->action->to = $this->data['to'] ;
+        $this->action->to = $this->data['to'];
+        $this->action->documents_comment = $this->data['documents_comment'];
 
         if ($this->action->save()) {
-            $this->saveExtenderProducts($this->action->id);
+            if ($this->flag) {
+                $this->updateExtenderProducts($this->action->id);
+            } else {
+                $this->saveExtenderProducts($this->action->id);
+            }
         }
 
     }
+
     /**
      * @param $action_id
      * @return void
@@ -155,7 +193,7 @@ class ActionsService
                 $actions_data->actions_id = $action_id;
                 $actions_data->quantity = $product['quantity'];
                 $actions_data->measurement = $product['measurement'];
-                $actions_data->actions_type = $this->type;
+                $actions_data->actions_type = (string) $this->type;
 
                 if ($actions_data->save()) {
                     unset($product['product_id']);
@@ -165,9 +203,9 @@ class ActionsService
                     foreach ($product as $key => $value) {
                         $product_extender = new ProductsExtender();
 
-                            $product_extender->key = Yii::$app->getter->getModificationIdBySlug($key);
-                            $product_extender->product_action_data_id = $actions_data->id;
-                            $product_extender->value = $value;
+                        $product_extender->key = Yii::$app->getter->getModificationIdBySlug($key);
+                        $product_extender->product_action_data_id = $actions_data->id;
+                        $product_extender->value = $value;
 
 
                         if ($product_extender->save()) {
@@ -181,6 +219,30 @@ class ActionsService
                     Common::debug($actions_data->getErrors());
                 }
             }
+        }
+    }
+
+    /**
+     * @param $action_id
+     * @return void
+     * @throws Exception
+     */
+    protected function updateExtenderProducts($action_id)
+    {
+        $actions_data = ProductsActionsData::find()->where(['actions_id' => $action_id])->all();
+
+        if (!empty($actions_data)) {
+            foreach ($actions_data as $acd_Value) {
+                (new Query())
+                    ->createCommand()
+                    ->delete('products_actions_data', ['id' => $acd_Value->id])->execute();
+
+                (new Query())
+                    ->createCommand()
+                    ->delete('products_extender', ['product_action_data_id' => $acd_Value->id])->execute();
+            }
+
+            $this->saveExtenderProducts($action_id);
         }
     }
 
