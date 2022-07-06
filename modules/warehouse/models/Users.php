@@ -2,6 +2,7 @@
 
 namespace app\modules\warehouse\models;
 
+use app\modules\warehouse\models\query\UsersQuery;
 use Yii;
 
 /**
@@ -60,10 +61,10 @@ class Users extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return \app\modules\warehouse\models\query\UsersQuery the active query used by this AR class.
+     * @return UsersQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\modules\warehouse\models\query\UsersQuery(get_called_class());
+        return new UsersQuery(get_called_class());
     }
 }

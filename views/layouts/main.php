@@ -1,6 +1,7 @@
 <?php
 
 /** @var yii\web\View $this */
+
 /** @var string $content */
 
 use app\assets\AppAsset;
@@ -9,6 +10,7 @@ use yii\bootstrap4\Breadcrumbs;
 use yii\bootstrap4\Html;
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
+use app\modules\warehouse\models\WarehouseEntities;
 
 AppAsset::register($this);
 ?>
@@ -43,12 +45,16 @@ AppAsset::register($this);
             ['label' => 'Пользователи', 'url' => ['/warehouse/users']],
             ['label' => 'Объекты ', 'url' => ['/warehouse/objects']],
             ['label' => 'Номенклатурные группы', 'url' => ['/warehouse/nomenclature-groups']],
-            ['label' => 'Действия',  'items' => [
+            ['label' => 'Заявки', 'items' => [
+                ['label' => 'Создать заявку', 'url' => ['/warehouse/products-actions/create', 'type' => 5]],
+                ['label' => 'Одобрить заявку', 'url' => ['/warehouse/products-actions', 'type' => 5]],
+            ],
+            ],
+            ['label' => 'Действия', 'items' => [
                 ['label' => 'Единицы измерения', 'url' => '/warehouse/measurement'],
                 ['label' => 'Модификации', 'url' => '/warehouse/product-modifications'],
                 ['label' => 'Назначить модификацию группам', 'url' => '/warehouse/product-modifications-groups'],
-                ['label' => 'Создать', 'url' => '/warehouse/products-actions'],
-
+                ['label' => 'Создать', 'url' => '/warehouse/products-actions']
             ],
             ],
         ],

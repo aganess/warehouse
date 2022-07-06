@@ -65,7 +65,12 @@ $this->registerCss($css);
             'model' => $model
         ]) ?>
     <?php endif; ?>
-
+    <?php if ($defaultType == 5): ?>
+        <?= $this->render('parts/_render_type_5', [
+            'form' => $form,
+            'model' => $model
+        ]) ?>
+    <?php endif; ?>
     <div class="form-row">
         <div class="col">
             <?= $form->field($model, 'products')->widget(MultipleInput::className(), [

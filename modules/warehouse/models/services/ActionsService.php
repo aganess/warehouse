@@ -119,6 +119,29 @@ class ActionsService
     }
 
     /**
+     * @return void
+     */
+    public function createFive()
+    {
+        $this->action->action_type = !empty($this->type) ? $this->type : $this->data['type'];
+
+        $this->action->date = $this->data['date'];
+        $this->action->from = $this->data['from'];
+        $this->action->phone = $this->data['phone'];
+        $this->action->address = $this->data['address'];
+        $this->action->how_send = $this->data['how_send'];
+        $this->action->entity_from = null;
+        $this->action->from = null;
+        $this->action->status = 0;
+        $this->action->entity_to = WarehouseEntities::getUserEvent();
+        $this->action->to = $this->data['to'] ;
+
+        if ($this->action->save()) {
+            $this->saveExtenderProducts($this->action->id);
+        }
+
+    }
+    /**
      * @param $action_id
      * @return void
      */

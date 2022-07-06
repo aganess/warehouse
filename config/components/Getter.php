@@ -6,6 +6,7 @@ use app\modules\warehouse\models\measurement\Measurement;
 use app\modules\warehouse\models\products\ProductModifications;
 use app\modules\warehouse\models\products\Products;
 use app\modules\warehouse\models\products\ProductsActionsData;
+use app\modules\warehouse\models\Users;
 use Yii;
 use yii\base\Component;
 
@@ -34,12 +35,12 @@ class Getter extends Component
                     $productExtDataKey = $productExtData->key . ' ';
                     $productExtDataValue = $productExtData->value . ' ';
 
-                    $product_name .= $this->getModificationTitleById($productExtDataKey) . ": " . '<b>'. $productExtDataValue . '</b>';
+                    $product_name .= $this->getModificationTitleById($productExtDataKey) . ": " . '<b>' . $productExtDataValue . '</b>';
                     $global_key .= $productExtDataKey . $productExtDataValue;
                 }
 
                 $global_key = md5($global_key);
-                $result[$global_key]['name'] =  $product_name  . ')';
+                $result[$global_key]['name'] = $product_name . ')';
                 $result[$global_key]['count'] += $quantity;
                 $result[$global_key]['measurement'] = $this->getMeasurementTitleById($measurement);
             }
@@ -70,6 +71,15 @@ class Getter extends Component
 
 
     /**
+     * @param $id
+     * @return string|null
+     */
+    public function getUserById($id): ?string
+    {
+        return Users::findOne(['id' => $id])->username ?? null;
+    }
+
+    /**
      * @param $product_id
      * @return int
      */
@@ -97,4 +107,17 @@ class Getter extends Component
     {
         return ProductModifications::findOne(['id' => $id])->title ?? 'Не задано';
     }
+
+    /**
+     * @param $id
+     * @return array|void
+     */
+    public function getModificationSlugById($id)
+    {
+        $result = ProductModifications::find()->where(['id' => $id])->asArray()->all();
+        foreach ($result as $key => $value) {
+            return $value['slug'];
+        }
+    }
+
 }

@@ -25,6 +25,8 @@ use yii\web\UploadedFile;
  * @property string|null $phone
  * @property string $from
  * @property string $action_type
+ * @property string $how_send
+ * @property string $address
  * @property string $to
  * @property string $entity_from
  * @property string $entity_to
@@ -41,6 +43,8 @@ use yii\web\UploadedFile;
  * @property-read array $allWarehouses
  * @property-read array $allUsersOrObjects
  * @property-read array $allProvidersOrUsers
+ * @property-read ActiveQuery $productsData
+ * @property-read string[] $allSendTypes
  * @property string|null $updated_at
  */
 class ProductsActions extends \yii\db\ActiveRecord
@@ -54,6 +58,7 @@ class ProductsActions extends \yii\db\ActiveRecord
     const INVENTORY_EMPLOYEE = 2;
     const RECEIPT_GOODS_WAREHOUSE = 3;
     const TRANSFER_OBJECT_EMPLOYEE = 4;
+    const TRANSFER_APP = 5;
 
     protected $attachment_path = '/attachments/';
     protected $ampersand = '/';
@@ -66,16 +71,16 @@ class ProductsActions extends \yii\db\ActiveRecord
         return 'products_actions';
     }
 
-//    /**
-//     * @return void
-//     */
-//    public function init()
-//    {
-//        parent::init();
-//
-//        $action_id = Yii::$app->request->get('id');
-//        $this->products = Yii::$app->grid->getDynamicColumns($action_id);
-//    }
+    /**
+     * @return void
+     */
+    public function init()
+    {
+        parent::init();
+
+        $action_id = Yii::$app->request->get('id');
+        $this->products = Yii::$app->grid->getDynamicColumns($action_id);
+    }
 
     /**
      * {@inheritdoc}
@@ -86,7 +91,8 @@ class ProductsActions extends \yii\db\ActiveRecord
             [['date'], 'required'],
             [['status'], 'integer'],
             [['documents_comment'], 'string'],
-            [['created_at', 'updated_at', 'type', 'from', 'to', 'entity_from', 'entity_to', 'products', 'action_type'], 'safe'],
+            [['created_at', 'updated_at', 'type', 'from', 'how_send', 'address',
+                'to', 'entity_from', 'entity_to', 'products', 'action_type'], 'safe'],
             [['date', 'phone', 'from', 'to', 'documents'], 'string', 'max' => 255],
             ['file', 'file'],
         ];
@@ -110,6 +116,8 @@ class ProductsActions extends \yii\db\ActiveRecord
             'file' => 'Документ',
             'documents_comment' => 'Комментарий к документу',
             'type' => 'Выберите тип действия',
+            'address' => 'Адрес',
+            'how_send' => 'Как отправить',
             'status' => 'Статус',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата обновления',
@@ -126,6 +134,7 @@ class ProductsActions extends \yii\db\ActiveRecord
             self::INVENTORY_EMPLOYEE => 'Инвентаризация сотрудника',
             self::RECEIPT_GOODS_WAREHOUSE => 'Поступление товара на склад',
             self::TRANSFER_OBJECT_EMPLOYEE => 'Передача на объект / сотруднику',
+            self::TRANSFER_APP => 'Заявка',
         ];
     }
 
@@ -219,6 +228,28 @@ class ProductsActions extends \yii\db\ActiveRecord
             'Пользователи' => ArrayHelper::map($users, 'username', 'username', true),
             'Контрагенты' => ArrayHelper::map($providers, 'id', 'title', true),
         ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function setAllSendTypes(): array
+    {
+        return [
+            1 => 'ТК',
+            2 => 'Самовызов',
+            3 => 'Через сотрудника'
+
+        ];
+    }
+
+    /**
+     * @param $id
+     * @return string
+     */
+    public static function getAllSendTypes($id)
+    {
+        return (new ProductsActions)->setAllSendTypes()[$id];
     }
 
 

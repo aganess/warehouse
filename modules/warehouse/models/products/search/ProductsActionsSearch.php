@@ -38,16 +38,20 @@ class ProductsActionsSearch extends ProductsActions
      * @param $params
      * @param $action_type
      * @param $entity
+     * @param bool $app_type
      * @return ActiveDataProvider
      */
-    public function search($params, $action_type = null, $entity = null): ActiveDataProvider
+    public function search($params, $action_type = null, $entity = null, bool $app_type = false): ActiveDataProvider
     {
         $query = ProductsActions::find()->with('productsData.extData');
 
-        if ($entity) {
-            $query->andWhere(['action_type' => $action_type])->andWhere(['entity_to' => $entity])->andWhere(['to' => $params['id']]);
+        if ($app_type) {
+            $query->andWhere(['action_type' => $action_type])->andWhere(['entity_to' => $entity])->andWhere(['status' => 0]);
+        } elseif ($entity) {
+            $query->andWhere(['action_type' => $action_type])->andWhere(['entity_to' => $entity])->andWhere(['to' => $params['id']])->andWhere(['status' => 1]);
+        }else {
+            $query->where(['status' => 1]);
         }
-
 
         // add conditions that should always apply here
 
@@ -79,8 +83,7 @@ class ProductsActionsSearch extends ProductsActions
             ->andFilterWhere(['like', 'entity_to', $this->entity_to])
             ->andFilterWhere(['like', 'to', $this->to])
             ->andFilterWhere(['like', 'documents', $this->documents])
-            ->andFilterWhere(['like', 'documents_comment', $this->documents_comment])
-           ;
+            ->andFilterWhere(['like', 'documents_comment', $this->documents_comment]);
 
         return $dataProvider;
     }
@@ -91,10 +94,10 @@ class ProductsActionsSearch extends ProductsActions
      */
     public function searchBySend($id): array
     {
-      return  ProductsActions::find()->where(['status' => 1])
+        return ProductsActions::find()->where(['status' => 1])
             ->with('productsData.extData')
             ->andWhere(['action_type' => ProductsActions::RECEIPT_GOODS_WAREHOUSE])
-            ->andWhere(['entity_from' =>  WarehouseEntities::getUserEvent()])
+            ->andWhere(['entity_from' => WarehouseEntities::getUserEvent()])
             ->andWhere(['from' => $id])
             ->all();
     }
@@ -105,10 +108,10 @@ class ProductsActionsSearch extends ProductsActions
      */
     public function searchBySendWarehouse($id): array
     {
-        return  ProductsActions::find()->where(['status' => 1])
+        return ProductsActions::find()->where(['status' => 1])
             ->with('productsData.extData')
             ->andWhere(['action_type' => ProductsActions::TRANSFER_OBJECT_EMPLOYEE])
-            ->andWhere(['entity_from' =>  WarehouseEntities::getWarehouseEvent()])
+            ->andWhere(['entity_from' => WarehouseEntities::getWarehouseEvent()])
             ->andWhere(['from' => $id])
             ->all();
     }

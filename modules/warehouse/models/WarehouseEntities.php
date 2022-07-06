@@ -85,6 +85,13 @@ class WarehouseEntities extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return string|null
+     */
+    public static function getApplicationEvent(): ?string
+    {
+        return self::find()->where(['status' => 1])->andWhere(['id' => 5])->one()->title;
+    }
+    /**
      * {@inheritdoc}
      * @return WarehouseEntitiesQuery the active query used by this AR class.
      */

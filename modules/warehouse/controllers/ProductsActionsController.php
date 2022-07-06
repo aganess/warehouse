@@ -40,12 +40,23 @@ class ProductsActionsController extends Controller
     }
 
     /**
-     * Lists all ProductsActions models.
-     *
      * @return string
      */
     public function actionIndex()
     {
+        $type = Yii::$app->request->get('type');
+
+        if (!empty($type) && $type == 5) {
+
+            $searchModel = new ProductsActionsSearch();
+            $dataProvider = $searchModel->search($this->request->queryParams, 5,'users',true);
+
+            return $this->render('index-app', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
+        }
+
         $searchModel = new ProductsActionsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
@@ -139,6 +150,9 @@ class ProductsActionsController extends Controller
 
                     case ProductsActions::TRANSFER_OBJECT_EMPLOYEE:
                         $actionService->createFour();
+                        break;
+                    case ProductsActions::TRANSFER_APP:
+                        $actionService->createFive();
                         break;
                 }
 

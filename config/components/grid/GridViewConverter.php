@@ -2,6 +2,7 @@
 
 namespace app\config\components\grid;
 
+use Yii;
 use app\config\components\Common;
 use app\modules\warehouse\models\products\ProductModifications;
 use app\modules\warehouse\models\products\ProductsActionsData;
@@ -180,24 +181,30 @@ class GridViewConverter extends Component
     public function getDynamicColumns($action_id)
     {
         $result = $this->getActionData($action_id);
-        $data = [];
 
+        $data = [];
         if ($result) {
-            foreach ($result as $value) {
-                $data[] = $value;
+            foreach ($result as $kk => $value) {
+                $data[] = [
+                    'product_id' => $value->product_id,
+                    'measurement' => $value->measurement,
+                    'quantity' => $value->quantity,
+                ];
+                foreach ($value['extData'] as $ectD) {
+                    $data[$kk][Yii::$app->getter->getModificationSlugById($ectD->key)] = $ectD->value;
+                }
             }
-            return $data;
         }
+        return $data;
     }
 
     /**
      * @param $action_id
-     * @return mixed|null
+     * @return ProductsActionsData|array|null
      */
     protected function getActionData($action_id)
     {
-        $product_action = ProductsActionsData::find()->where(['status' => 1])->andWhere(['actions_id' => $action_id])->one();
-
-        return Json::decode($product_action->data);
+        return ProductsActionsData::find()->with(['extData'])->where(['status' => 1])->andWhere(['actions_id' => $action_id])->all();
     }
+
 }
