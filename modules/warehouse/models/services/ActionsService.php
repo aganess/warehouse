@@ -24,6 +24,7 @@ class ActionsService
      * @var array
      */
     public $type;
+    public $action_ids;
 
 
     /**
@@ -36,6 +37,8 @@ class ActionsService
     {
         $this->data = $data;
         $this->flag = $updateFlag;
+        $this->action_ids = $action_id;
+
         $this->action = new ProductsActions();
 
         if ($type) {
@@ -156,14 +159,15 @@ class ActionsService
     public function createFive()
     {
         $this->action->action_type = !empty($this->type) ? (string)$this->type : (string)$this->data['type'];
+        $checkType = $this->action->getUserIdByUsername($this->data['from']);
 
         $this->action->date = $this->data['date'];
         $this->action->from = $this->data['from'];
         $this->action->phone = $this->data['phone'];
         $this->action->address = $this->data['address'];
         $this->action->how_send = $this->data['how_send'];
-        $this->action->entity_from = null;
-        $this->action->from = null;
+        $this->action->entity_from = empty($checkType) ? WarehouseEntities::getWarehouseEvent() : WarehouseEntities::getUserEvent();;
+        $this->action->from = $this->data['from'];
         $this->action->status = $this->flag ? 1 : 0;
         $this->action->entity_to = WarehouseEntities::getUserEvent();
         $this->action->to = $this->data['to'];
@@ -176,14 +180,39 @@ class ActionsService
                 $this->saveExtenderProducts($this->action->id);
             }
         }
+    }
 
+    /**
+     * @return void
+     */
+    public function createFiveForUpdate()
+    {
+        $this->action->action_type = 6;
+        $checkType = $this->action->getUserIdByUsername($this->data['from']);
+
+        $this->action->date = $this->data['date'];
+        $this->action->parent_task = $this->action_ids;
+        $this->action->phone = $this->data['phone'];
+        $this->action->address = $this->data['address'];
+        $this->action->how_send = $this->data['how_send'];
+        $this->action->entity_from = empty($checkType) ? WarehouseEntities::getWarehouseEvent() : WarehouseEntities::getUserEvent();
+        $this->action->from = $this->data['from'];
+        $this->action->status = 1;
+        $this->action->entity_to = WarehouseEntities::getUserEvent();
+        $this->action->to = $this->data['to'];
+        $this->action->documents_comment = $this->data['documents_comment'];
+
+        if ($this->action->save()) {
+            $this->saveExtenderProducts($this->action->id, true);
+        }
     }
 
     /**
      * @param $action_id
+     * @param bool $type_flag
      * @return void
      */
-    protected function saveExtenderProducts($action_id)
+    protected function saveExtenderProducts($action_id, bool $type_flag = false)
     {
         if (!empty($this->data['products'])) {
 
@@ -193,7 +222,7 @@ class ActionsService
                 $actions_data->actions_id = $action_id;
                 $actions_data->quantity = $product['quantity'];
                 $actions_data->measurement = $product['measurement'];
-                $actions_data->actions_type = (string) $this->type;
+                $actions_data->actions_type = $type_flag ? '6' : (string)$this->type;
 
                 if ($actions_data->save()) {
                     unset($product['product_id']);

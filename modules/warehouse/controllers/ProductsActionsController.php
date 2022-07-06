@@ -159,7 +159,8 @@ class ProductsActionsController extends Controller
                         $actionService->createFour();
                         break;
                     case ProductsActions::TRANSFER_APP:
-                        $actionService->createFive();
+                        $actionService = new ActionsService($postData, false, $model->id, $defaultType);
+                        $actionService->createFiveForUpdate();
                         break;
                 }
 

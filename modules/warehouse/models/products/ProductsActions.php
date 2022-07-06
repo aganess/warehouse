@@ -25,6 +25,7 @@ use yii\web\UploadedFile;
  * @property string|null $phone
  * @property string $from
  * @property string $action_type
+ * @property string $parent_task
  * @property string $how_send
  * @property string $address
  * @property string $to
@@ -92,7 +93,7 @@ class ProductsActions extends \yii\db\ActiveRecord
             [['status'], 'integer'],
             [['documents_comment'], 'string'],
             [['created_at', 'updated_at', 'type', 'from', 'how_send', 'address',
-                'to', 'entity_from', 'entity_to', 'products', 'action_type'], 'safe'],
+                'to', 'entity_from', 'entity_to', 'products', 'action_type', 'parent_task'], 'safe'],
             [['date', 'phone', 'from', 'to', 'documents'], 'string', 'max' => 255],
             ['file', 'file'],
         ];
@@ -109,6 +110,7 @@ class ProductsActions extends \yii\db\ActiveRecord
             'phone' => 'Телефон',
             'to' => 'Куда',
             'from' => 'Кто',
+            'parent_task' => 'Кто',
             'entity_from' => 'Сущность отправки',
             'entity_to' => 'Сущность получение',
             'object_id' => 'Объек',
@@ -216,6 +218,19 @@ class ProductsActions extends \yii\db\ActiveRecord
         return ArrayHelper::map(Warehouses::find()->where(['status' => 1])->all(), 'id', 'title');
     }
 
+    /**
+     * @return array
+     */
+    public function getAllUsersOrWarehouses(): array
+    {
+        $users = Users::find()->where(['status' => 1])->all();
+        $warehouses = Warehouses::find()->where(['status' => 1])->all();
+
+        return [
+            'Пользователи' => ArrayHelper::map($users, 'username', 'username', true),
+            'Склад' => ArrayHelper::map($warehouses, 'id', 'title', true),
+        ];
+    }
     /**
      * @return array
      */

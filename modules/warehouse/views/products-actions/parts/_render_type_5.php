@@ -14,6 +14,7 @@ use yii\web\JsExpression;
 use yii\helpers\Url;
 use unclead\multipleinput\MultipleInput;
 
+$action = Yii::$app->controller->action->id;
 ?>
 
 
@@ -36,6 +37,20 @@ use unclead\multipleinput\MultipleInput;
             ],
         ])->label('Кому') ?>
     </div>
+
+    <?php if ($action === 'update'): ?>
+        <div class="col">
+            <?= $form->field($model, 'from')->widget(Select2::classname(), [
+                'data' => $model->getAllUsersOrWarehouses(),
+                'value' => $model->to ?? null,
+                'options' => ['placeholder' => 'Выберите значение ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ])->label('От кого ') ?>
+        </div>
+    <?php endif; ?>
+
     <div class="col">
         <?= $form->field($model, 'how_send')->widget(Select2::classname(), [
             'data' => $model->setAllSendTypes(),
@@ -46,6 +61,7 @@ use unclead\multipleinput\MultipleInput;
             ],
         ])->label('Как отправить') ?>
     </div>
+
     <div class="col">
         <?= $form->field($model, 'address')->textInput()->label('Адрес') ?>
     </div>
