@@ -20,7 +20,7 @@ class Getter extends Component
     public function getExtDataByFilter($data): array
     {
         $result = [];
-        foreach ($data as $key => $value) {
+        foreach ($data as  $value) {
             /** @var ProductsActionsData $productActionData */
             foreach ($value['productsData'] as $productActionData) {
                 $global_key = '';
