@@ -46,6 +46,7 @@ use yii\web\UploadedFile;
  * @property-read array $allProvidersOrUsers
  * @property-read ActiveQuery $productsData
  * @property-read string[] $allSendTypes
+ * @property-read array $allUsersOrWarehouses
  * @property string|null $updated_at
  */
 class ProductsActions extends \yii\db\ActiveRecord
@@ -231,6 +232,7 @@ class ProductsActions extends \yii\db\ActiveRecord
             'Склад' => ArrayHelper::map($warehouses, 'id', 'title', true),
         ];
     }
+
     /**
      * @return array
      */
@@ -296,6 +298,23 @@ class ProductsActions extends \yii\db\ActiveRecord
     public function getProductsData(): ActiveQuery
     {
         return $this->hasMany(ProductsActionsData::className(), ['actions_id' => 'id']);
+    }
+
+    /**
+     * @param $id
+     * @return int
+     */
+    public function getParent($id): int
+    {
+        return ProductsActions::findOne(['parent_task' => $id])->id;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getParentProductAction(): ActiveQuery
+    {
+        return $this->hasOne(ProductsActions::className(), ['parent_task' => 'id']);
     }
 
     /**

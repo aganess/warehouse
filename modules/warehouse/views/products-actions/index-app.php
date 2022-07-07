@@ -52,7 +52,10 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'status',
                 'value' => function ($model) {
-                    return $model['status'] == 1 ? '<span style="color: green">Одобрено</span>' : '<span style="color: red">Не одобрено</span>';
+                    if ($model['parentProductAction']) {
+                        return 'Одобрен';
+                    }
+                    return 'Не одоброне';
                 },
                 'format' => 'raw'
             ],
@@ -60,9 +63,19 @@ $this->params['breadcrumbs'][] = $this->title;
             //'updated_at',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                }
+                'buttons' => [
+                    'update' => function ($url, $model) {
+                        $url = $model['parentProductAction'] ? '/warehouse/products-actions/update?id=' . $model['parentProductAction']['id'] : $url;
+                        return Html::a('<i class="fas fa-pen"></i> ', $url);
+                    },
+                    'delete' => function ($url, $model) {
+                        return Html::a('<i class="fas fa-trash-alt"></i>', $url);
+                    },
+                    'view' => function ($url, $model) {
+                        return Html::a(' <i class="fas fa-eye"></i>', $url);
+                    },
+                ],
+                'template' => '{update} {delete} {view}',
             ],
         ],
     ]); ?>

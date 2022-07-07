@@ -96,7 +96,9 @@ $this->registerCss($css);
         </div>
     <?php else :?>
         <div class="form-group">
-            <?= Html::submitButton($model->isNewRecord ? 'Сохранить' : 'Обновить', ['class' => 'btn btn-success']) ?>
+            <?php if (!$defaultType == 6) :?>
+                <?= Html::submitButton($model->isNewRecord ? 'Сохранить' : 'Обновить', ['class' => 'btn btn-success']) ?>
+            <?php endif;?>
         </div>
     <?php endif;?>
 
