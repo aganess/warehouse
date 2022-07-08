@@ -102,6 +102,21 @@ class ProductsActionsSearch extends ProductsActions
             ->all();
     }
 
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function searchBySendАpp($id): array
+    {
+        return ProductsActions::find()->where(['status' => 1])
+            ->with('productsData.extData')
+            ->andWhere(['action_type' => 6])
+            //->andWhere(['entity_to' => WarehouseEntities::getUserEvent()])
+            ->andWhere(['to' => $id])
+            ->all();
+    }
+
     /**
      * @param $id
      * @return ProductsActions[]|array

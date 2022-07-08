@@ -66,7 +66,16 @@ class UsersController extends Controller
         $dataProvider = $searchModel->search($this->request->queryParams, ProductsActions::TRANSFER_OBJECT_EMPLOYEE, WarehouseEntities::getUserEvent());
 
         $data = Yii::$app->getter->getExtDataByFilter($dataProvider->getModels());
+        $dataApp = Yii::$app->getter->getExtDataByFilter($searchModel->searchBySendАpp($id));
         $send = Yii::$app->getter->getExtDataByFilter($searchModel->searchBySend($id));
+
+        foreach ($dataApp as $sdk => $sendData) {
+            if ($data[$sdk]) {
+                $data[$sdk]['count'] += $sendData['count'];
+            } else {
+                $data[$sdk] = $sendData;
+            }
+        }
 
         foreach ($send as $sdk => $sendData) {
             if ($data[$sdk]) {

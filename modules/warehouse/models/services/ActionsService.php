@@ -196,7 +196,7 @@ class ActionsService
         $this->action->address = $this->data['address'];
         $this->action->how_send = $this->data['how_send'];
         $this->action->entity_from = empty($checkType) ? WarehouseEntities::getWarehouseEvent() : WarehouseEntities::getUserEvent();
-        $this->action->from = $this->data['from'];
+        $this->action->from = empty($checkType) ? (string)$this->data['from'] : (string)$checkType;
         $this->action->status = 1;
         $this->action->entity_to = WarehouseEntities::getUserEvent();
         $this->action->to = $this->data['to'];
