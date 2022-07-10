@@ -66,23 +66,42 @@ class WarehousesController extends Controller
         $data = Yii::$app->getter->getExtDataByFilter($dataProvider->getModels());
         $send = Yii::$app->getter->getExtDataByFilter($searchModel->searchBySendWarehouse($id));
 
-        foreach ($send as $sdk => $sendData) {
-            if ($data[$sdk]) {
-                $data[$sdk]['count'] -= $sendData['count'];
-            } else {
-                foreach ($sendData as $key => $value) {
-                    if ($key === 'count') {
-                        $data[$sdk][$key] -= $value;
-                    }else {
-                        $data[$sdk][$key] = $value;
+        $inv = ProductsActions::find()
+            ->where(['status' => 1])
+            ->andWhere(['entity_to' => WarehouseEntities::getWarehouseEvent()])
+            ->andWhere(['to' => $id])
+            ->andWhere(['action_type' => 1])
+            ->orderBy(['id' => SORT_DESC])->one();
+
+        if ($inv) {
+
+            $inv_data = Yii::$app->getter->getWarehouseInvForeachResult($inv);
+
+            return $this->render('view', [
+                'data' => $inv_data,
+                'model' => $this->findModel($id),
+            ]);
+
+        } else {
+            foreach ($send as $sdk => $sendData) {
+                if ($data[$sdk]) {
+                    $data[$sdk]['count'] -= $sendData['count'];
+                } else {
+                    foreach ($sendData as $key => $value) {
+                        if ($key === 'count') {
+                            $data[$sdk][$key] -= $value;
+                        } else {
+                            $data[$sdk][$key] = $value;
+                        }
                     }
                 }
             }
+            return $this->render('view', [
+                'data' => $data,
+                'model' => $this->findModel($id),
+            ]);
         }
-        return $this->render('view', [
-            'data' => $data,
-            'model' => $this->findModel($id),
-        ]);
+
     }
 
     /**

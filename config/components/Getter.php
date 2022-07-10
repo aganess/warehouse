@@ -5,8 +5,11 @@ namespace app\config\components;
 use app\modules\warehouse\models\measurement\Measurement;
 use app\modules\warehouse\models\products\ProductModifications;
 use app\modules\warehouse\models\products\Products;
+use app\modules\warehouse\models\products\ProductsActions;
 use app\modules\warehouse\models\products\ProductsActionsData;
 use app\modules\warehouse\models\Users;
+use app\modules\warehouse\models\WarehouseEntities;
+use Mpdf\Tag\U;
 use Yii;
 use yii\base\Component;
 
@@ -120,4 +123,92 @@ class Getter extends Component
         }
     }
 
+
+    /**
+     * @param $data
+     * @return array
+     */
+    public function getUserInvForeachResult($data): array
+    {
+        $pr_action = ProductsActions::find()
+            ->with('productsData.extData')
+            ->where(['>', 'id', $data->id])
+            ->andWhere(['action_type' => ProductsActions::TRANSFER_OBJECT_EMPLOYEE])
+            ->andWhere(['entity_to' => WarehouseEntities::getUserEvent()])
+            ->andWhere(['to' => $data->from])
+            ->all();
+
+        $pr_action_ = ProductsActions::find()
+            ->with('productsData.extData')
+            ->where(['>', 'id', $data->id])
+            ->andWhere(['action_type' => ProductsActions::RECEIPT_GOODS_WAREHOUSE])
+            ->andWhere(['entity_from' => WarehouseEntities::getUserEvent()])
+            ->andWhere(['from' => $data->from])
+            ->all();
+
+        $pr_action[] = $data;
+
+        $res_prd = Yii::$app->getter->getExtDataByFilter($pr_action);
+        $res_prd_ = Yii::$app->getter->getExtDataByFilter($pr_action_);
+
+        foreach ($res_prd_ as $sdk => $sendData) {
+            if ($res_prd[$sdk]) {
+                $res_prd[$sdk]['count'] -= $sendData['count'];
+            } else {
+                foreach ($sendData as $key => $value) {
+                    if ($key === 'count') {
+                        $res_prd[$sdk][$key] -= $value;
+                    } else {
+                        $res_prd[$sdk][$key] = $value;
+                    }
+                }
+            }
+        }
+        return $res_prd;
+
+    }
+
+    /**
+     * @param $data
+     * @return array
+     */
+    public function getWarehouseInvForeachResult($data): array
+    {
+        $pr_action = ProductsActions::find()
+            ->with('productsData.extData')
+            ->where(['>', 'id', $data->id])
+            ->andWhere(['action_type' => ProductsActions::RECEIPT_GOODS_WAREHOUSE])
+            ->andWhere(['entity_to' => WarehouseEntities::getWarehouseEvent()])
+            ->andWhere(['to' => $data->to])
+            ->all();
+
+        $pr_action_ = ProductsActions::find()
+            ->with('productsData.extData')
+            ->where(['>', 'id', $data->id])
+            ->andWhere(['action_type' => ProductsActions::TRANSFER_OBJECT_EMPLOYEE])
+            ->andWhere(['entity_from' => WarehouseEntities::getWarehouseEvent()])
+            ->andWhere(['from' => $data->to])
+            ->all();
+
+
+        $pr_action[] = $data;
+
+        $res_prd = Yii::$app->getter->getExtDataByFilter($pr_action);
+        $res_prd_ = Yii::$app->getter->getExtDataByFilter($pr_action_);
+
+        foreach ($res_prd_ as $sdk => $sendData) {
+            if ($res_prd[$sdk]) {
+                $res_prd[$sdk]['count'] -= $sendData['count'];
+            } else {
+                foreach ($sendData as $key => $value) {
+                    if ($key === 'count') {
+                        $res_prd[$sdk][$key] -= $value;
+                    } else {
+                        $res_prd[$sdk][$key] = $value;
+                    }
+                }
+            }
+        }
+        return $res_prd;
+    }
 }

@@ -69,26 +69,46 @@ class UsersController extends Controller
         $dataApp = Yii::$app->getter->getExtDataByFilter($searchModel->searchBySendАpp($id));
         $send = Yii::$app->getter->getExtDataByFilter($searchModel->searchBySend($id));
 
-        foreach ($dataApp as $sdk => $sendData) {
-            if ($data[$sdk]) {
-                $data[$sdk]['count'] += $sendData['count'];
-            } else {
-                $data[$sdk] = $sendData;
+        $inv = ProductsActions::find()
+            ->where(['status' => 1])
+            ->andWhere(['entity_from' => WarehouseEntities::getUserEvent()])
+            ->andWhere(['from' => $id])
+            ->andWhere(['to' => null])
+            ->andWhere(['entity_to' => null])
+            ->andWhere(['action_type' => 2])
+            ->orderBy(['id' => SORT_DESC])->one();
+
+        if ($inv) {
+
+            $inv_data = Yii::$app->getter->getUserInvForeachResult($inv);
+
+            return $this->render('view', [
+                'data' => $inv_data,
+                'model' => $this->findModel($id),
+            ]);
+        } else {
+            foreach ($dataApp as $sdk => $sendData) {
+                if ($data[$sdk]) {
+                    $data[$sdk]['count'] += $sendData['count'];
+                } else {
+                    $data[$sdk] = $sendData;
+                }
             }
+
+            foreach ($send as $sdk => $sendData) {
+                if ($data[$sdk]) {
+                    $data[$sdk]['count'] -= $sendData['count'];
+                } else {
+                    $data[$sdk] = $sendData;
+                }
+            }
+
+            return $this->render('view', [
+                'model' => $this->findModel($id),
+                'data' => $data
+            ]);
         }
 
-        foreach ($send as $sdk => $sendData) {
-            if ($data[$sdk]) {
-                $data[$sdk]['count'] -= $sendData['count'];
-            } else {
-                $data[$sdk] = $sendData;
-            }
-        }
-
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-            'data' => $data
-        ]);
     }
 
     /**
