@@ -47,6 +47,7 @@ use yii\web\UploadedFile;
  * @property-read ActiveQuery $productsData
  * @property-read string[] $allSendTypes
  * @property-read array $allUsersOrWarehouses
+ * @property-read ActiveQuery $parentProductAction
  * @property string|null $updated_at
  */
 class ProductsActions extends \yii\db\ActiveRecord
